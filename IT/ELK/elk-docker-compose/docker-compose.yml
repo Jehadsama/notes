@@ -10,7 +10,7 @@ services:
       - 'discovery.type=single-node'
       - 'ES_JAVA_OPTS=-Xms64m -Xmx256m'
     volumes:
-      - /Users/lijiahang/my-projects/elk-docker-compose/ik:/usr/share/elasticsearch/plugins/ik
+      - /Users/lijiahang/my-projects/notes/IT/ELK/elk-docker-compose/ik:/usr/share/elasticsearch/plugins/ik
 
   kibana:
     image: kibana:7.12.0
