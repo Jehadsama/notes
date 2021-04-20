@@ -1,0 +1,21 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:7.12.0
+    ports:
+      - '9200:9200'
+    expose:
+      - 9300
+    environment:
+      - 'discovery.type=single-node'
+      - 'ES_JAVA_OPTS=-Xms64m -Xmx256m'
+    volumes:
+      - /Users/lijiahang/my-projects/notes/IT/ELK/elk-docker-compose/ik:/usr/share/elasticsearch/plugins/ik
+
+  kibana:
+    image: kibana:7.12.0
+    ports:
+      - '5601:5601'
+    environment:
+      - 'i18n.locale:zh-CN'
+      - elasticsearch.hosts=http://elasticsearch:9300
