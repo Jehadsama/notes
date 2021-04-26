@@ -98,11 +98,11 @@ function myPromise(fn) {
   }
 }
 // myPromise的原型上定义链式调用的then方法
-myPromise.prototype.then = function (onFullfilled, onRejected) {
+myPromise.prototype.then = function (onFulfilled, onRejected) {
   const self = this;
   switch (self.status) {
     case 'resolved':
-      onFullfilled(self.value);
+      onFulfilled(self.value);
       break;
     case 'rejected':
       onRejected(self.reason);
@@ -174,7 +174,7 @@ promise.then(console.log);
 
 ### version02: 基于观察模式实现
 
-为了解决处理异步问题，修改 myPromise，用 2 个数组 onFullfilledArray 和 onRejectedArray 来保存异步的方法。当状态发生改变，一次遍历执行数组中的方法。
+为了解决处理异步问题，修改 myPromise，用 2 个数组 onFulfilledArray 和 onRejectedArray 来保存异步的方法。当状态发生改变，一次遍历执行数组中的方法。
 
 ```js
 function myPromise(fn) {
@@ -182,14 +182,14 @@ function myPromise(fn) {
   self.status = 'pending'; // status有三种：pending/resolved/rejected
   self.value = undefined; // resolved状态的值
   self.reason = undefined; // rejected状态的值
-  self.onFullfilledArray = [];
+  self.onFulfilledArray = [];
   self.onRejectedArray = [];
   const resolve = (value) => {
     // 当且仅单status为pending才能执行，表示状态改变不可以逆
     if (self.status === 'pending') {
       self.status = 'resolved';
       self.value = value;
-      self.onFullfilledArray.forEach((f) => {
+      self.onFulfilledArray.forEach((f) => {
         f(self.value);
       });
     }
@@ -212,15 +212,15 @@ function myPromise(fn) {
   }
 }
 // myPromise的原型上定义链式调用的then方法
-myPromise.prototype.then = function (onFullfilled, onRejected) {
+myPromise.prototype.then = function (onFulfilled, onRejected) {
   const self = this;
   switch (self.status) {
     case 'pending':
-      self.onFullfilledArray.push(onFullfilled);
+      self.onFulfilledArray.push(onFulfilled);
       self.onRejectedArray.push(onRejected);
       break;
     case 'resolved':
-      onFullfilled(self.value);
+      onFulfilled(self.value);
       break;
     case 'rejected':
       onRejected(self.reason);
@@ -230,7 +230,7 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
 };
 ```
 
-通过增加 onFullfilledArray，onRejectedArray 两个数组，在状态发生改变之后再开始执行，确实解决了异步 resolve 无法调用的问题。
+通过增加 onFulfilledArray，onRejectedArray 两个数组，在状态发生改变之后再开始执行，确实解决了异步 resolve 无法调用的问题。
 
 这样完成了吗？还没有，Promise/A+规范的最大的特点就是链式调用，也就是说 then 方法的返回也应该是 promise。
 
@@ -239,15 +239,15 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
 为了让 myPromise 的 then 方法支持链式调用，则必须让 then 方法返回 promise。
 
 ```js
-myPromise.prototype.then = function (onFullfilled, onRejected) {
+myPromise.prototype.then = function (onFulfilled, onRejected) {
   const self = this;
   let promise;
   switch (self.status) {
     case 'pending':
       promise = new myPromise((resolve, reject) => {
-        self.onFullfilledArray.push(function () {
+        self.onFulfilledArray.push(function () {
           try {
-            let temp = onFullfilled(self.value);
+            let temp = onFulfilled(self.value);
             resolve(temp);
           } catch (e) {
             reject(e); //error catch
@@ -262,13 +262,13 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
           }
         });
       });
-      self.onFullfilledArray.push(onFullfilled);
+      self.onFulfilledArray.push(onFulfilled);
       self.onRejectedArray.push(onRejected);
       break;
     case 'resolved':
       promise = new myPromise((resolve, reject) => {
         try {
-          const temp = onFullfilled(self.value);
+          const temp = onFulfilled(self.value);
           resolve(temp);
         } catch (err) {
           reject(err);
@@ -310,4 +310,13 @@ promise
 // then 2
 ```
 
-现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFullfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
+现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFulfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
+
+```js
+const promise2 = promise1.then(onFulfilled, onRejected);
+```
+
+1. 如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程[[Resolve]](promise2,x)
+1. 如果 **onFulfilled** 或者 **onRejected** 抛出一个异常 **e**，则 **promise2** 必须拒绝执行并返回拒绝原因 **e**
+1. 如果 **onFulfilled** 不是函数且 **promise1** 成功执行，**promise2** 必须成功执行并返回相同的值
+1. 如果 **onRejected** 不是函数且 **promise1** 拒绝执行，**promise2** 必须拒绝执行并返回相同的拒绝原因
