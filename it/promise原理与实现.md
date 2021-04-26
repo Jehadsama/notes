@@ -233,3 +233,81 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
 通过增加 onFullfilledArray，onRejectedArray 两个数组，在状态发生改变之后再开始执行，确实解决了异步 resolve 无法调用的问题。
 
 这样完成了吗？还没有，Promise/A+规范的最大的特点就是链式调用，也就是说 then 方法的返回也应该是 promise。
+
+### version03: 实现 then 方法的链式调用
+
+为了让 myPromise 的 then 方法支持链式调用，则必须让 then 方法返回 promise。
+
+```js
+myPromise.prototype.then = function (onFullfilled, onRejected) {
+  const self = this;
+  let promise;
+  switch (self.status) {
+    case 'pending':
+      promise = new myPromise((resolve, reject) => {
+        self.onFullfilledArray.push(function () {
+          try {
+            let temp = onFullfilled(self.value);
+            resolve(temp);
+          } catch (e) {
+            reject(e); //error catch
+          }
+        });
+        self.onRejectedArray.push(function () {
+          try {
+            let temp = onRejected(self.reason);
+            reject(temp);
+          } catch (e) {
+            reject(e); // error catch
+          }
+        });
+      });
+      self.onFullfilledArray.push(onFullfilled);
+      self.onRejectedArray.push(onRejected);
+      break;
+    case 'resolved':
+      promise = new myPromise((resolve, reject) => {
+        try {
+          const temp = onFullfilled(self.value);
+          resolve(temp);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      break;
+    case 'rejected':
+      promise = new myPromise((resolve, reject) => {
+        try {
+          const temp = onRejected(self.reason);
+          reject(temp);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      break;
+    default:
+  }
+  // 这里记得要把promise 返回出去
+  return promise;
+};
+```
+
+现在再测试一下。
+
+```js
+const promise = new myPromise((resolve, reject) => {
+  resolve('success');
+});
+promise
+  .then(() => {
+    console.log('then 1');
+  })
+  .then(() => {
+    console.log('then 2');
+  });
+// output:
+// then 1
+// then 2
+```
+
+现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFullfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
