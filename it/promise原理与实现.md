@@ -66,3 +66,7 @@ promise.then(onFulfilled,onRejected)
 ```js
 promise2 = promise1.then(onFulfilled, onRejected);
 ```
+
+## 实现一个 Promise
+
+> 只要符合 Promise/A+规范，就是 Promise ^_^
