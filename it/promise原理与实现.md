@@ -146,7 +146,7 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
 让我们测试一下。
 
 ```js
-const promise1 = new Promise((resolve, reject) => {
+const promise1 = new myPromise((resolve, reject) => {
   resolve('promise resolved');
 });
 promise1.then(console.log);
@@ -154,7 +154,7 @@ promise1.then(console.log);
 // output:
 // promise resolved
 
-const promise2 = new Promise((resolve, reject) => {
+const promise2 = new myPromise((resolve, reject) => {
   reject('promise rejected');
 });
 promise2.catch(console.log);
@@ -166,10 +166,11 @@ promise2.catch(console.log);
 测试结果确实是符合预期，在 myPromise 中状态发生改变，然后 then 方法里根据相应状态执行不同逻辑处理。但这个版本的 myPromise 还无法处理异步的 resolve。
 
 ```js
-const promise = new Promise((resolve, reject) => {
+const promise = new myPromise((resolve, reject) => {
   setTimeout(() => {
     resolve('success');
   }, 1000);
 });
 promise.then(console.log);
+// no output
 ```
