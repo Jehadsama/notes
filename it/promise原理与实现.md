@@ -67,7 +67,7 @@ promise2 = promise1.then(onFulfilled, onRejected);
 
 > 只要符合 Promise/A+规范，就是 Promise
 
-version01: 基础版本
+### version01: 基础版本
 
 ```js
 function myPromise(fn) {
@@ -170,3 +170,65 @@ const promise = new myPromise((resolve, reject) => {
 promise.then(console.log);
 // no output
 ```
+
+### version02: 基于观察模式实现
+
+为了解决处理异步问题，修改 myPromise，用 2 个数组 onFullfilledArray 和 onRejectedArray 来保存异步的方法。当状态发生改变，一次遍历执行数组中的方法。
+
+```js
+function myPromise(fn) {
+  const self = this;
+  self.status = 'pending'; // status有三种：pending/resolved/rejected
+  self.value = undefined; // resolved状态的值
+  self.reason = undefined; // rejected状态的值
+  self.onFullfilledArray = [];
+  self.onRejectedArray = [];
+  const resolve = (value) => {
+    // 当且仅单status为pending才能执行，表示状态改变不可以逆
+    if (self.status === 'pending') {
+      self.status = 'resolved';
+      self.value = value;
+      self.onFullfilledArray.forEach((f) => {
+        f(self.value);
+      });
+    }
+  };
+  const reject = (reason) => {
+    // 当且仅单status为pending才能执行，表示状态改变不可以逆
+    if (self.status === 'pending') {
+      self.status = 'rejected';
+      self.reason = reason;
+      self.onRejectedArray.forEach((f) => {
+        f(self.reason);
+      });
+    }
+  };
+  // 这里需要针对构造异常的情况catch error
+  try {
+    fn(resolve, reject);
+  } catch (err) {
+    reject(err);
+  }
+}
+// myPromise的原型上定义链式调用的then方法
+myPromise.prototype.then = function (onFullfilled, onRejected) {
+  const self = this;
+  switch (self.status) {
+    case 'pending':
+      self.onFullfilledArray.push(onFullfilled);
+      self.onRejectedArray.push(onRejected);
+      break;
+    case 'resolved':
+      onFullfilled(self.value);
+      break;
+    case 'rejected':
+      onRejected(self.reason);
+      break;
+    default:
+  }
+};
+```
+
+通过增加 onFullfilledArray，onRejectedArray 两个数组，在状态发生改变之后再开始执行，确实解决了异步 resolve 无法调用的问题。
+这个版本，myPromise 就能处理所有的异步，问这样完成了吗？
+还没有，Promise/A+规范的最大的特点就是链式调用，也就是说 then 方法的返回也应该是 promise。
