@@ -39,6 +39,7 @@ Promise 还支持 resolve，all，race 等方法。
 Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 [Promise/A+规范（英文版）](https://promisesaplus.com/)
+
 [Promise/A+规范（中文版）](https://promisesaplus.cn/)
 
 1.术语
@@ -230,5 +231,7 @@ myPromise.prototype.then = function (onFullfilled, onRejected) {
 ```
 
 通过增加 onFullfilledArray，onRejectedArray 两个数组，在状态发生改变之后再开始执行，确实解决了异步 resolve 无法调用的问题。
+
 这个版本，myPromise 就能处理所有的异步，问这样完成了吗？
+
 还没有，Promise/A+规范的最大的特点就是链式调用，也就是说 then 方法的返回也应该是 promise。
