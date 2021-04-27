@@ -46,7 +46,7 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 （1）"promise"是具有 then 方法的对象或者函数
 
-（2）"thenable"是定义 then 方法的对象或者函数
+（2）"thenable"是定义 then 方法的对象或者函数（ps：我理解的 thenable 应该是包含 Promise 的，所以有些文章会形容为“有 then 方法且看上去像 Promise”）
 
 （3）"value"是 promise 状态成功时的值，任意合法的 javascript 值（包括 undefined/thenable/promise 等）
 
@@ -104,51 +104,44 @@ promise.then(onFulfilled, onRejected);
    const promise1 = new Promise((resolve, reject) => {
      resolve('resolved');
    });
-   const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     (v) => {
-       console.log('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
+   const promise2 = promise1.then(() => {
+     return 'This is a common value';
+   });
+   promise2.then(console.log);
    // output:
-   // promise1-then1 resolved
-   // promise2-then1 undefined
+   // This is a common value
    ```
 
    ```js
    const promise1 = new Promise((resolve, reject) => {
-     reject('rejected');
+     resolve('rejected');
    });
    const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     (v) => {
-       console.log('promise1-then2', v);
-     }
+     (v) =>
+       new Promise((resolve, reject) => {
+         resolve('This is a promise');
+       })
    );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
+   promise2.then((v) => {
+     console.log(v);
+   });
 
    // output:
-   // promise1-then2 rejected
-   // promise2-then1 undefined
+   // This is a promise
+
+   const promise1 = new Promise((resolve, reject) => {
+     resolve('rejected');
+   });
+   const promise2 = promise1.then((v) => ({
+     then(resolve, reject) {
+       resolve('This is a thenable object');
+     },
+   }));
+   promise2.then((v) => {
+     console.log(v);
+   });
+   // output:
+   // This is a thenable object
    ```
 
    2） 如果 **onFulfilled** 或者 **onRejected** 抛出一个异常 **e**，则 **promise2** 必须拒绝执行并返回拒绝原因 **e**
