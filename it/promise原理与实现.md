@@ -314,6 +314,8 @@ promise
 
 现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFulfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
 
+### version04: then 方法 的 onFullfilled、onRejected 的返回值完善
+
 我们继续来看一下 Promise/A+规范的对 then 方法的定义
 
 promise 必须提供一个 **then** 方法去访问当前或最终成功的结果或者失败的原因
