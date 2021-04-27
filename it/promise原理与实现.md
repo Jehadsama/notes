@@ -318,7 +318,7 @@ promise
 
 我们继续来看一下 Promise/A+规范的对 then 方法的定义
 
-promise 必须提供一个 **then** 方法去访问当前或最终成功的结果或者失败的原因
+#### promise 必须提供一个 **then** 方法去访问当前或最终成功的结果或者失败的原因
 
 Promise 的**then**方法接受两个参数：
 
