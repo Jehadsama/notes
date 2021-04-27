@@ -261,7 +261,7 @@ promise.then(onFulfilled, onRejected);
 
 1. **onFulfilled**和**onRejected**只有在执行上下文 堆栈仅包含平台代码时才可被调用
 
-   ps：
+   PS：
 
    - 这里的平台代码指的是引擎、环境以及 promise 的实施代码。实践中要确保 onFulfilled 和 onRejected 方法异步执行，且应该在 then 方法被调用的那一轮事件循环之后的新执行栈中执行。这个事件队列可以采用“宏任务（macro-task）”机制或者“微任务（micro-task）”机制来实现。由于 promise 的实施代码本身就是平台代码（即都是 JavaScript），故代码自身在处理在处理程序时可能已经包含一个任务调度队列。
 
@@ -269,7 +269,7 @@ promise.then(onFulfilled, onRejected);
      - macro-task: script（整体代码）, setTimeout, setInterval, setImmediate, I/O, UI rendering - macro-task: script（整体代码）, setTimeout, setInterval, setImmediate, I/O, UI rendering
      - micro-task: process.nextTick, Promises（这里指浏览器实现的原生 Promise）, Object.observe, MutationObserver
 
-1. **onFulfilled**和**onRejected**必被作为函数调用（尽管没有**this**值）
+1. **onFulfilled**和**onRejected**必被作为函数调用（尽管没有**this**值）(PS：也就是说在严格模式（strict）中，函数 this 的值为 undefined ；在非严格模式中其为全局对象。)
 1. **then**方法可以被同一个 promise 多次调用，
 
    1）当 promise 成功时，所有**onFulfilled**回调函数需按照最原始的 then 顺序调用
