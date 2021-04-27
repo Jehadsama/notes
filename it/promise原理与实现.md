@@ -42,7 +42,7 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 [Promise/A+规范（中文版）](https://promisesaplus.cn/)
 
-1.术语
+### 1.术语
 
 （1）"promise"是具有 then 方法的对象或者函数
 
@@ -54,7 +54,7 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 （5）"reason"是 promise 状态失败时的值，表明 promise 被拒绝的原因
 
-2.要求
+### 2.要求
 
 （1）一个 promise 必须有 3 个状态，pending，fulfilled(resolved)，rejected 当处于 pending 状态的时候，可以转移到 fulfilled(resolved)或者 rejected 状态。当处于 fulfilled(resolved)状态或者 rejected 状态的时候，就不可变。
 
@@ -65,6 +65,188 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 ```js
 promise2 = promise1.then(onFulfilled, onRejected);
 ```
+
+### 3.then 方法的定义
+
+#### promise 必须提供一个 **then** 方法去访问当前或最终成功的结果或者失败的原因
+
+Promise 的**then**方法接受两个参数：
+
+```js
+promise.then(onFulfilled, onRejected);
+```
+
+1. **onFulfilled**和**onRejected**都是可选参数，如果不是函数，则将被忽略
+1. 如果**onFulfilled**/**onRejected**是一个函数，
+   1）此函数在 promise 成功（fulfilled）/失败（rejected）时被调用，并把 promise 的成功值（value）/失败原因（reason）当成它第一个参数
+   2）在 promise 成功（fulfilled）/失败（rejected）之前一定不能提前被调用
+   3）该函数只执行一次
+1. **onFulfilled**和**onRejected**只有在执行上下文 堆栈仅包含平台代码时才可被调用
+1. **onFulfilled**和**onRejected**必被作为函数调用（尽管没有**this**值）
+1. **then**方法可以被同一个 promisec 多次调用，
+   1）当 promise 成功时，所有**onFulfilled**回调函数需按照最原始的 then 顺序调用
+   2）当 promise 失败时，所有**onRejected**回调函数需按照其对**then**的原始调用顺序执行
+1. **then**必须返回一个 promise，
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     resolve('hello world');
+   });
+   const promise2 = promise1.then(onFulfilled, onRejected);
+   ```
+
+   1）如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程`[[Resolve]](promise2,x)`
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     resolve('resolved');
+   });
+   const promise2 = promise1.then(
+     (v) => {
+       console.log('promise1-then1', v);
+     },
+     (v) => {
+       console.log('promise1-then2', v);
+     }
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+   // output:
+   // promise1-then1 resolved
+   // promise2-then1 undefined
+   ```
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     reject('rejected');
+   });
+   const promise2 = promise1.then(
+     (v) => {
+       console.log('promise1-then1', v);
+     },
+     (v) => {
+       console.log('promise1-then2', v);
+     }
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+
+   // output:
+   // promise1-then2 rejected
+   // promise2-then1 undefined
+   ```
+
+   2） 如果 **onFulfilled** 或者 **onRejected** 抛出一个异常 **e**，则 **promise2** 必须拒绝执行并返回拒绝原因 **e**
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     resolve('resolved');
+   });
+   const promise2 = promise1.then(
+     (v) => {
+       throw new Error('promise-then1');
+     },
+     (v) => {
+       console.log('promise1-then2', v);
+     }
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+
+   // output:
+   // promise2-then2 Error: promise1-then1
+
+   const promise1 = new Promise((resolve, reject) => {
+     reject('rejected');
+   });
+   const promise2 = promise1.then(
+     (v) => {
+       console.log('promise1-then1', v);
+     },
+     (v) => {
+       throw new Error('promise1-then2', v);
+     }
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+
+   // output:
+   // promise2-then2 Error: promise1-then2
+   ```
+
+   3） 如果 **onFulfilled** 不是函数且 **promise1** 成功执行，**promise2** 必须成功执行并返回相同的值
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     resolve('resolved');
+   });
+   const promise2 = promise1.then(
+     '1', // 不是函数就行
+     (v) => {
+       console.log('promise1-then2', v);
+     }
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+
+   // output:
+   // promise2-then1 resolved
+   ```
+
+   4） 如果 **onRejected** 不是函数且 **promise1** 拒绝执行，**promise2** 必须拒绝执行并返回相同的拒绝原因
+
+   ```js
+   const promise1 = new Promise((resolve, reject) => {
+     reject('rejected');
+   });
+   const promise2 = promise1.then(
+     (v) => {
+       console.log('promise1-then1', v);
+     },
+     '' //不是函数就行
+   );
+   promise2.then(
+     (v) => {
+       console.log('promise2-then1', v);
+     },
+     (v) => {
+       console.log('promise2-then2', v);
+     }
+   );
+
+   // output:
+   // promise2-then2 rejected
+   ```
 
 ## 实现一个 Promise
 
@@ -315,187 +497,3 @@ promise
 现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFulfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
 
 ### version04: then 方法 的 onFullfilled、onRejected 的返回值完善
-
-我们继续来看一下 Promise/A+规范的对 then 方法的定义
-
-#### promise 必须提供一个 **then** 方法去访问当前或最终成功的结果或者失败的原因
-
-Promise 的**then**方法接受两个参数：
-
-```js
-promise.then(onFulfilled, onRejected);
-```
-
-1. **onFulfilled**和**onRejected**都是可选参数，如果不是函数，则将被忽略
-1. 如果**onFulfilled**/**onRejected**是一个函数，
-   1）此函数在 promise 成功（fulfilled）/失败（rejected）时被调用，并把 promise 的成功值（value）/失败原因（reason）当成它第一个参数
-   2）在 promise 成功（fulfilled）/失败（rejected）之前一定不能提前被调用
-   3）该函数只执行一次
-1. **onFulfilled**和**onRejected**只有在执行上下文 堆栈仅包含平台代码时才可被调用
-1. **onFulfilled**和**onRejected**必被作为函数调用（尽管没有**this**值）
-1. **then**方法可以被同一个 promisec 多次调用，
-   1）当 promise 成功时，所有**onFulfilled**回调函数需按照最原始的 then 顺序调用
-   2）当 promise 失败时，所有**onRejected**回调函数需按照其对**then**的原始调用顺序执行
-1. **then**必须返回一个 promise，
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     resolve('hello world');
-   });
-   const promise2 = promise1.then(onFulfilled, onRejected);
-   ```
-
-   1）如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程`[[Resolve]](promise2,x)`
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     resolve('resolved');
-   });
-   const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     (v) => {
-       console.log('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-   // output:
-   // promise1-then1 resolved
-   // promise2-then1 undefined
-   ```
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     reject('rejected');
-   });
-   const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     (v) => {
-       console.log('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-
-   // output:
-   // promise1-then2 rejected
-   // promise2-then1 undefined
-   ```
-
-   2） 如果 **onFulfilled** 或者 **onRejected** 抛出一个异常 **e**，则 **promise2** 必须拒绝执行并返回拒绝原因 **e**
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     resolve('resolved');
-   });
-   const promise2 = promise1.then(
-     (v) => {
-       throw new Error('promise-then1');
-     },
-     (v) => {
-       console.log('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-
-   // output:
-   // promise2-then2 Error: promise1-then1
-
-   const promise1 = new Promise((resolve, reject) => {
-     reject('rejected');
-   });
-   const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     (v) => {
-       throw new Error('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-
-   // output:
-   // promise2-then2 Error: promise1-then2
-   ```
-
-   3） 如果 **onFulfilled** 不是函数且 **promise1** 成功执行，**promise2** 必须成功执行并返回相同的值
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     resolve('resolved');
-   });
-   const promise2 = promise1.then(
-     '1', // 不是函数就行
-     (v) => {
-       console.log('promise1-then2', v);
-     }
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-
-   // output:
-   // promise2-then1 resolved
-   ```
-
-   4） 如果 **onRejected** 不是函数且 **promise1** 拒绝执行，**promise2** 必须拒绝执行并返回相同的拒绝原因
-
-   ```js
-   const promise1 = new Promise((resolve, reject) => {
-     reject('rejected');
-   });
-   const promise2 = promise1.then(
-     (v) => {
-       console.log('promise1-then1', v);
-     },
-     '' //不是函数就行
-   );
-   promise2.then(
-     (v) => {
-       console.log('promise2-then1', v);
-     },
-     (v) => {
-       console.log('promise2-then2', v);
-     }
-   );
-
-   // output:
-   // promise2-then2 rejected
-   ```
-
-ps：promise1
