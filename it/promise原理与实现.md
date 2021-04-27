@@ -77,15 +77,22 @@ promise.then(onFulfilled, onRejected);
 ```
 
 1. **onFulfilled**和**onRejected**都是可选参数，如果不是函数，则将被忽略
-1. 如果**onFulfilled**/**onRejected**是一个函数，
+1. 如果**onFulfilled**/**onRejected**是一个函数：
+
    1）此函数在 promise 成功（fulfilled）/失败（rejected）时被调用，并把 promise 的成功值（value）/失败原因（reason）当成它第一个参数
+
    2）在 promise 成功（fulfilled）/失败（rejected）之前一定不能提前被调用
+
    3）该函数只执行一次
+
 1. **onFulfilled**和**onRejected**只有在执行上下文 堆栈仅包含平台代码时才可被调用
 1. **onFulfilled**和**onRejected**必被作为函数调用（尽管没有**this**值）
 1. **then**方法可以被同一个 promisec 多次调用，
+
    1）当 promise 成功时，所有**onFulfilled**回调函数需按照最原始的 then 顺序调用
+
    2）当 promise 失败时，所有**onRejected**回调函数需按照其对**then**的原始调用顺序执行
+
 1. **then**必须返回一个 promise，
 
    ```js
