@@ -248,6 +248,8 @@ promise.then(onFulfilled, onRejected);
    // promise2-then2 rejected
    ```
 
+#### Promise 处理过程
+
 ## 实现一个 Promise
 
 > 只要符合 Promise/A+规范，就是 Promise
