@@ -260,6 +260,7 @@ promise.then(onFulfilled, onRejected);
    3）该函数只执行一次
 
 1. **onFulfilled**和**onRejected**只有在执行上下文 堆栈仅包含平台代码时才可被调用
+
    ps：
 
    - 这里的平台代码指的是引擎、环境以及 promise 的实施代码。实践中要确保 onFulfilled 和 onRejected 方法异步执行，且应该在 then 方法被调用的那一轮事件循环之后的新执行栈中执行。这个事件队列可以采用“宏任务（macro-task）”机制或者“微任务（micro-task）”机制来实现。由于 promise 的实施代码本身就是平台代码（即都是 JavaScript），故代码自身在处理在处理程序时可能已经包含一个任务调度队列。
