@@ -66,7 +66,7 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 promise2 = promise1.then(onFulfilled, onRejected);
 ```
 
-**根据已知的信息来逐步实现一个 promise**
+#### 根据已知的信息来逐步实现一个 promise
 
 ## 实现一个 Promise
 
@@ -238,83 +238,7 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
 
 这样完成了吗？还没有，Promise/A+规范的最大的特点就是链式调用，也就是说 then 方法的返回也应该是 promise。
 
-### version03: 实现 then 方法的链式调用
-
-为了让 myPromise 的 then 方法支持链式调用，则必须让 then 方法返回 promise。
-
-```js
-myPromise.prototype.then = function (onFulfilled, onRejected) {
-  const self = this;
-  let promise;
-  switch (self.status) {
-    case 'pending':
-      promise = new myPromise((resolve, reject) => {
-        self.onFulfilledArray.push(function () {
-          try {
-            let temp = onFulfilled(self.value);
-            resolve(temp);
-          } catch (e) {
-            reject(e); //error catch
-          }
-        });
-        self.onRejectedArray.push(function () {
-          try {
-            let temp = onRejected(self.reason);
-            reject(temp);
-          } catch (e) {
-            reject(e); // error catch
-          }
-        });
-      });
-      self.onFulfilledArray.push(onFulfilled);
-      self.onRejectedArray.push(onRejected);
-      break;
-    case 'resolved':
-      promise = new myPromise((resolve, reject) => {
-        try {
-          const temp = onFulfilled(self.value);
-          resolve(temp);
-        } catch (err) {
-          reject(err);
-        }
-      });
-      break;
-    case 'rejected':
-      promise = new myPromise((resolve, reject) => {
-        try {
-          const temp = onRejected(self.reason);
-          reject(temp);
-        } catch (err) {
-          reject(err);
-        }
-      });
-      break;
-    default:
-  }
-  // 这里记得要把promise 返回出去
-  return promise;
-};
-```
-
-现在再测试一下。
-
-```js
-const promise = new myPromise((resolve, reject) => {
-  resolve('success');
-});
-promise
-  .then(() => {
-    console.log('then 1');
-  })
-  .then(() => {
-    console.log('then 2');
-  });
-// output:
-// then 1
-// then 2
-```
-
-现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFulfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
+#### 到这里先暂停下，先深入了解 then 方法
 
 ### 3.then 方法的定义
 
@@ -498,8 +422,115 @@ promise.then(onFulfilled, onRejected);
    // promise2-then2 rejected
    ```
 
+### version03: 实现 then 方法的链式调用
+
+为了让 myPromise 的 then 方法支持链式调用，则必须让 then 方法返回 promise。
+
+```js
+myPromise.prototype.then = function (onFulfilled, onRejected) {
+  const self = this;
+  let promise;
+  switch (self.status) {
+    case 'pending':
+      promise = new myPromise((resolve, reject) => {
+        self.onFulfilledArray.push(function () {
+          try {
+            let temp = onFulfilled(self.value);
+            resolve(temp);
+          } catch (e) {
+            reject(e); //error catch
+          }
+        });
+        self.onRejectedArray.push(function () {
+          try {
+            let temp = onRejected(self.reason);
+            reject(temp);
+          } catch (e) {
+            reject(e); // error catch
+          }
+        });
+      });
+      self.onFulfilledArray.push(onFulfilled);
+      self.onRejectedArray.push(onRejected);
+      break;
+    case 'resolved':
+      promise = new myPromise((resolve, reject) => {
+        try {
+          const temp = onFulfilled(self.value);
+          resolve(temp);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      break;
+    case 'rejected':
+      promise = new myPromise((resolve, reject) => {
+        try {
+          const temp = onRejected(self.reason);
+          reject(temp);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      break;
+    default:
+  }
+  // 这里记得要把promise 返回出去
+  return promise;
+};
+```
+
+现在再测试一下。
+
+```js
+const promise = new myPromise((resolve, reject) => {
+  resolve('success');
+});
+promise
+  .then(() => {
+    console.log('then 1');
+  })
+  .then(() => {
+    console.log('then 2');
+  });
+// output:
+// then 1
+// then 2
+```
+
+现在支持 then 链式调用了，但是还有一个问题，就是在 Promise/A+规范中 then 函数里面的 onFulfilled 方法和 onRejected 方法的返回值可以是对象，函数，甚至是另一个 promise。
+
+#### 让我们继续了解一下 Promise 的处理过程
+
 #### Promise 处理过程
 
-> Promise 处理过程是一个抽象的动作，其需输入一个**promise**和一个值，我们表示为`[[Resolve]](promise,x)`，如果**x**有**then**方法且看上去像一个 Promise（即 thanable 对象），处理程序将以这个**promise**对象的**then**返回值继续传递下去，如果**x**是一个普通值，则用成功的回调传递下去
+Promise 处理过程是一个抽象的动作，其需输入一个**promise**和一个值，我们表示为`[[Resolve]](promise,x)`，如果**x**有**then**方法且看上去像一个 Promise（即 thanable 对象），处理程序尝试使**promise**接受**x**的状态（以这个**promise**对象的**then**返回值继续传递下去），如果**x**是一个普通值，则用成功的回调传递下去（用**x**的值来执行**promise**）
+
+> 这种 thenable 的特性使得 Promise 的实现更具有通用性：只要其暴露出一个遵循 Promise/A+ 协议的 then 方法即可；这同时也使遵循 Promise/A+ 规范的实现可以与那些不太规范但可用的实现能良好共存。
+
+运行`[[Resolve]](promise,x)`需遵循以下的步骤：
+
+1. **x** 与**promise**相等（指向同一对象）：以**TypeError**为拒绝原因拒绝执行**promise**（循环调用本身了）
+
+1. **x** 为**promise**，则使**promise**接受**x**的状态：
+
+   - **x** 处于 pending，**promise**需保持为 pending 直到**x**被执行或拒绝
+   - **x** 处于 resolved，用相同的值执行 promise
+   - **x** 处于 rejected，用相同的拒绝原因拒绝 promise
+
+1. **x** 为对象或者函数（thenable）：
+   - 把**x.then** 赋值给 **then**
+   - 如果取**x.then**的值时抛出错误 **e**，则以 **e** 为拒绝原因拒绝 **promise**
+   - 如果**then** 是函数，将**x**作为函数的作用域**this**调用之。传递两个回调函数作为参数，第一个参数叫做**resolvePromise**，第二个参数叫做**rejectPromise**:
+     - 如果**resolvePromise**以值**y**为参数被调用，则运行`[[Resolve]](promise,y)`
+     - 如果**rejectPromise**以拒绝原因**r**为参数被调用，则以拒绝原因**r**拒绝**promise**
+     - 如果**resolvePromise**和**rejectPromise**均被调用，或者被同一参数调用了多次，则优先采用首次调用并忽略剩下的调用
+     - 如果调用**then**方法抛出了异常**e**：
+       - 如果**resolvePromise**或**rejectPromise**已经被调用，则忽略之
+       - 否则以**e**为拒绝原因拒绝**promise**
+     - 如果**then**不是函数，以**x**为参数执行**promise**
+   - 如果**x**不为对象或者函数，以**x**为参数执行**promise**
+
+如果一个 **promise** 被一个循环的 **thenable** 链中的对象解决，而 `[[Resolve]](promise, thenable)` 的递归性质又使得其被再次调用，根据上述的算法将会陷入无限递归之中。算法虽不强制要求，但也鼓励施者检测这样的递归是否存在，若检测到存在则以一个可识别的 **TypeError** 为拒绝原因来拒绝 **promise**。
 
 ### version04: then 方法 的 onFullfilled、onRejected 的返回值完善
