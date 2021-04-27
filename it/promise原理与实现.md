@@ -60,7 +60,7 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 （2）一个 promise 必须有一个 then 方法，then 方法接受两个参数：onFulfilled 方法表示状态从 pending——>fulfilled(resolved)时所执行的方法，而 onRejected 表示状态从 pending——>rejected 所执行的方法。
 
-（3）为了实现链式调用，then 方法必须返回一个 promise
+（3）为了实现链式调用，then 方法必须返回一个 promise（PS：代码实现在满足所有要求的情况下可以允许 promise2 === promise1 。每个实现都要文档说明其是否允许以及在何种条件下允许 promise2 === promise1 ）
 
 ```js
 promise2 = promise1.then(onFulfilled, onRejected);
@@ -521,14 +521,14 @@ Promise 处理过程是一个抽象的动作，其需输入一个**promise**和�
 
 1. **x** 与**promise**相等（指向同一对象）：以**TypeError**为拒绝原因拒绝执行**promise**（循环调用本身了）
 
-1. **x** 为**promise**，则使**promise**接受**x**的状态：
+1. **x** 为**promise**，则使**promise**接受**x**的状态：（PS：总体来说，如果 x 符合当前实现，我们才认为它是真正的 promise 。这一规则允许那些特例实现接受符合已知要求的 Promises 状态。）
 
    - **x** 处于 pending，**promise**需保持为 pending 直到**x**被执行或拒绝
    - **x** 处于 resolved，用相同的值执行 promise
    - **x** 处于 rejected，用相同的拒绝原因拒绝 promise
 
 1. **x** 为对象或者函数（thenable）：
-   - 把**x.then** 赋值给 **then**
+   - 把**x.then** 赋值给 **then** （PS：这步我们先是存储了一个指向 x.then 的引用，然后测试并调用该引用，以避免多次访问 x.then 属性。这种预防措施确保了该属性的一致性，因为其值可能在检索调用时被改变。）
    - 如果取**x.then**的值时抛出错误 **e**，则以 **e** 为拒绝原因拒绝 **promise**
    - 如果**then** 是函数，将**x**作为函数的作用域**this**调用之。传递两个回调函数作为参数，第一个参数叫做**resolvePromise**，第二个参数叫做**rejectPromise**:
      - 如果**resolvePromise**以值**y**为参数被调用，则运行`[[Resolve]](promise,y)`
@@ -540,6 +540,6 @@ Promise 处理过程是一个抽象的动作，其需输入一个**promise**和�
      - 如果**then**不是函数，以**x**为参数执行**promise**
    - 如果**x**不为对象或者函数，以**x**为参数执行**promise**
 
-如果一个 **promise** 被一个循环的 **thenable** 链中的对象解决，而 `[[Resolve]](promise, thenable)` 的递归性质又使得其被再次调用，根据上述的算法将会陷入无限递归之中。算法虽不强制要求，但也鼓励施者检测这样的递归是否存在，若检测到存在则以一个可识别的 **TypeError** 为拒绝原因来拒绝 **promise**。
+如果一个 **promise** 被一个循环的 **thenable** 链中的对象解决，而 `[[Resolve]](promise, thenable)` 的递归性质又使得其被再次调用，根据上述的算法将会陷入无限递归之中。算法虽不强制要求，但也鼓励施者检测这样的递归是否存在，若检测到存在则以一个可识别的 **TypeError** 为拒绝原因来拒绝 **promise**。（PS：实现不应该对 thenable 链的深度设限，并假定超出本限制的递归就是无限循环。只有真正的循环递归才应能导致 TypeError 异常；如果一条无限长的链上 thenable 均不相同，那么递归下去永远是正确的行为）
 
 ### version04: then 方法 的 onFullfilled、onRejected 的返回值完善
