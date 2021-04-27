@@ -97,6 +97,9 @@ promise.then(onFulfilled, onRejected);
 
    1）如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程`[[Resolve]](promise2,x)`
 
+   - 若**x**不是**Promise**,则使**x**直接作为新返回的**Promise**对象的值，即新的**onFulfilled** 或者 **onRejected**函数的参数
+   - 若**x**是**Promise**,这时后一个回调函数就会等待该**Promise**对象（即**x**）的状态发生改变之后才会被调用，并且新的**Promise**的状态和 **x**的状态相同
+
    ```js
    const promise1 = new Promise((resolve, reject) => {
      resolve('resolved');
@@ -249,6 +252,8 @@ promise.then(onFulfilled, onRejected);
    ```
 
 #### Promise 处理过程
+
+> Promise 处理过程是一个抽象的动作，其需输入一个**promise**和一个值，我们表示为`[[Resolve]](promise,x)`，如果**x**有**then**方法且看上去像一个 Promise（即 thanable 对象），处理程序将以这个**promise**对象的**then**返回值继续传递下去，如果**x**是一个普通值，则用成功的回调传递下去
 
 ## 实现一个 Promise
 
