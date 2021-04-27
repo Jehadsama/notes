@@ -343,7 +343,7 @@ promise.then(onFulfilled, onRejected);
    const promise2 = promise1.then(onFulfilled, onRejected);
    ```
 
-   1）如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程[ [Resolve] ] (promise2,x)
+   1）如果 **onFulfilled** 或者 **onRejected** 返回一个值 **x**，则运行下面的 Promise 解决过程`[[Resolve]](promise2,x)`
 
    ```js
    const promise1 = new Promise((resolve, reject) => {
