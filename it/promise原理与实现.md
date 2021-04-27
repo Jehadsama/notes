@@ -350,7 +350,6 @@ promise.then(onFulfilled, onRejected);
    ```js
    const promise1 = new Promise((resolve, reject) => {
      resolve('resolved');
-     // reject('rejected');
    });
    const promise2 = promise1.then(
      (v) => {
@@ -375,7 +374,6 @@ promise.then(onFulfilled, onRejected);
 
    ```js
    const promise1 = new Promise((resolve, reject) => {
-     // resolve('resolved');
      reject('rejected');
    });
    const promise2 = promise1.then(
@@ -405,11 +403,9 @@ promise.then(onFulfilled, onRejected);
    ```js
    const promise1 = new Promise((resolve, reject) => {
      resolve('resolved');
-     // reject('rejected');
    });
    const promise2 = promise1.then(
      (v) => {
-       // console.log('promise1-then1',v);
        throw new Error('promise-then1');
      },
      (v) => {
@@ -429,7 +425,6 @@ promise.then(onFulfilled, onRejected);
    // promise2-then2 Error: promise1-then1
 
    const promise1 = new Promise((resolve, reject) => {
-     // resolve('resolved');
      reject('rejected');
    });
    const promise2 = promise1.then(
@@ -458,7 +453,6 @@ promise.then(onFulfilled, onRejected);
    ```js
    const promise1 = new Promise((resolve, reject) => {
      resolve('resolved');
-     // reject('rejected');
    });
    const promise2 = promise1.then(
      '1', // 不是函数就行
@@ -483,16 +477,12 @@ promise.then(onFulfilled, onRejected);
 
    ```js
    const promise1 = new Promise((resolve, reject) => {
-     // resolve('resolved');
      reject('rejected');
    });
    const promise2 = promise1.then(
      (v) => {
        console.log('promise1-then1', v);
      },
-     // (v) => {
-     //   throw new Error('promise1-then2', v);
-     // }
      '' //不是函数就行
    );
    promise2.then(
