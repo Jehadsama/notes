@@ -44,13 +44,15 @@ Promise/A+规范扩展了早期的 Promise/A proposal 提案。
 
 1.术语
 
-（1）"promise"是一个对象或者函数，该对象或者函数有一个 then 方法
+（1）"promise"是具有 then 方法的对象或者函数
 
-（2）"thenable"是一个对象或者函数，用来定义 then 方法
+（2）"thenable"是定义 then 方法的对象或者函数
 
-（3）"value"是 promise 状态成功时的值
+（3）"value"是 promise 状态成功时的值，任意合法的 javascript 值（包括 undefined/thenable/promise 等）
 
-（4）"reason"是 promise 状态失败时的值
+（4）"exception"是 使用 throw 语句抛出的一个值
+
+（5）"reason"是 promise 状态失败时的值，表明 promise 被拒绝的原因
 
 2.要求
 
