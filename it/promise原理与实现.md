@@ -110,9 +110,7 @@ promise.then(onFulfilled, onRejected);
    promise2.then(console.log);
    // output:
    // This is a common value
-   ```
 
-   ```js
    const promise1 = new Promise((resolve, reject) => {
      resolve('rejected');
    });
@@ -125,7 +123,6 @@ promise.then(onFulfilled, onRejected);
    promise2.then((v) => {
      console.log(v);
    });
-
    // output:
    // This is a promise
 
