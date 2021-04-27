@@ -276,7 +276,7 @@ promise.then(onFulfilled, onRejected);
 
    2）当 promise 失败时，所有**onRejected**回调函数需按照其对**then**的原始调用顺序执行
 
-1. **then**必须返回一个 promise，这样 promise 才支持链式调用
+1. **then**必须返回一个 promise，这样 promise 才支持链式调用（PS：代码实现在满足所有要求的情况下可以允许 promise2 === promise1 。每个实现都要文档说明其是否允许以及在何种条件下允许 promise2 === promise1 ）
 
    ```js
    const promise = new Promise((resolve, reject) => {
