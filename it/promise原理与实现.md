@@ -542,4 +542,55 @@ Promise 处理过程是一个抽象的动作，其需输入一个**promise**和�
 
 如果一个 **promise** 被一个循环的 **thenable** 链中的对象解决，而 `[[Resolve]](promise, thenable)` 的递归性质又使得其被再次调用，根据上述的算法将会陷入无限递归之中。算法虽不强制要求，但也鼓励施者检测这样的递归是否存在，若检测到存在则以一个可识别的 **TypeError** 为拒绝原因来拒绝 **promise**。（PS：实现不应该对 thenable 链的深度设限，并假定超出本限制的递归就是无限循环。只有真正的循环递归才应能导致 TypeError 异常；如果一条无限长的链上 thenable 均不相同，那么递归下去永远是正确的行为）
 
+#### 现在接着来实现 then
+
 ### version04: then 方法 的 onFullfilled、onRejected 的返回值完善
+
+#### 首先根据 Promise/A+规范实现 resolvePromise
+
+```js
+myPromise.prototype.resolvePromise = (promise, x, resolve, reject) => {
+  // x和promise相等
+  if (promise === x) {
+    reject(new Error('promise and x refer to the same object'));
+  }
+
+  // 防止重复调用
+  let isCall = false;
+  // x可能是promise，对象或函数,由于typeof null === 'object' ，所以需要过滤下
+  if (x != null && (typeof x === 'object' || typeof x === 'function')) {
+    let then = x.then;
+    try {
+      // x是thenable，符合Promise要求
+      if (typeof x === 'function') {
+        // 返回值y可能是Promise或普通值，所以这里递归调用处理
+        // 直到最后x是非thenable，就可以resolve(xs)
+        then.call(
+          x,
+          (y) => {
+            if (isCalled) return;
+            isCalled = true;
+            resolvePromise(promise, y, resolve, reject);
+          },
+          (err) => {
+            if (isCalled) return;
+            isCalled = true;
+            reject(err);
+          }
+        );
+      } else {
+        //是对象或者函数，但不是thenable，直接返回
+        resolve(x);
+      }
+    } catch (err) {
+      if (isCalled) return;
+      isCalled = true;
+      reject(err);
+    }
+    // 在判断x是否为函数
+  } else {
+    // 那就是普通值了，直接返回就好
+    resolve(x);
+  }
+};
+```
