@@ -459,8 +459,6 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
           }
         });
       });
-      self.onFulfilledArray.push(onFulfilled);
-      self.onRejectedArray.push(onRejected);
       break;
     case 'resolved':
       promise = new myPromise((resolve, reject) => {
@@ -592,5 +590,52 @@ myPromise.prototype.resolvePromise = (promise, x, resolve, reject) => {
     // 那就是普通值了，直接返回就好
     resolve(x);
   }
+};
+```
+
+#### 结合 resolvePromise 继续来改造 then 方法
+
+```js
+myPromise.prototype.then = function (onFulfilled, onRejected) {
+  const self = this;
+
+  const promise = new Promise((resolve, reject) => {
+    try {
+      switch (self.status) {
+        case 'pending':
+          self.onFulfilledArray.push(function () {
+            try {
+              const x = onFulfilled(self.value);
+              resolvePromise(promise, x, resolve, reject);
+            } catch (e) {
+              reject(e); //error catch
+            }
+          });
+          self.onRejectedArray.push(function () {
+            try {
+              const x = onRejected(self.reason);
+              resolvePromise(promise, x, resolve, reject);
+            } catch (e) {
+              reject(e); // error catch
+            }
+          });
+          break;
+        case 'resolved':
+          const x = onFulfilled(self.value);
+          resolvePromise(promise, x, resolve, reject);
+          break;
+
+        case 'rejected':
+          const x = onRejected(self.reason);
+          resolvePromise(promise, x, resolve, reject);
+          break;
+        default:
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+  // 这里记得要把promise 返回出去
+  return promise;
 };
 ```
