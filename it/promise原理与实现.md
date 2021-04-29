@@ -639,3 +639,13 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
   return promise;
 };
 ```
+
+### 附录
+
+=========
+
+1. 代码仓库
+
+   - [myPromise 的实现 class 版本]('./myPromise/myPromiseClass.js')
+
+   - [myPromise 的实现 function 版本]('./myPromise/myPromiseFunction.js')
