@@ -640,6 +640,8 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
 };
 ```
 
+#### 这里还缺少一些 promise 方法的实现，包括 resolve，race，all 等
+
 ### 附录
 
 =========
