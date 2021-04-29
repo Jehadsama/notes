@@ -644,7 +644,7 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
 
 ### 附录
 
-=========
+---
 
 1. 代码仓库
 
