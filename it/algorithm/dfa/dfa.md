@@ -43,6 +43,8 @@ DFA 全称 Deterministic Finite Automaton,即确定有穷自动机。特征是�
 
 ### 树状结构
 
+![帅气的我手画树状图](https://github.com/Jehadsama/notes/blob/master/it/algorithm/dfa/dfa.png)
+
 ### 构造结构
 
 ```json
