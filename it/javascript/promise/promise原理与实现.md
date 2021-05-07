@@ -648,6 +648,6 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
 
 1. 代码仓库
 
-   - [myPromise 的实现 class 版本](https://github.com/Jehadsama/notes/blob/master/it/myPromise/myPromiseClass.js)
+   - [myPromise 的实现 class 版本](https://github.com/Jehadsama/notes/blob/master/it/javascript/promise/myPromiseClass.js)
 
-   - [myPromise 的实现 function 版本](https://github.com/Jehadsama/notes/blob/master/it/myPromise/myPromiseFunction.js)
+   - [myPromise 的实现 function 版本](https://github.com/Jehadsama/notes/blob/master/it/javascript/promise/myPromiseFunction.js)
