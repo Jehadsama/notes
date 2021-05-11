@@ -106,7 +106,7 @@ const buildMap = (wordList) => {
     // 2. 循环每个敏感词短语
     for (let j = 0; j < word.length; ++j) {
       const ch = word.charAt(j);
-      // 3. 判断这个字是不是已经存在与map里面
+      // 3. 判断这个字是不是已经存在于map里面
       if (typeof map[ch] !== 'undefined') {
         // 存在该字符
         map = map[ch];
