@@ -163,7 +163,7 @@ const check = (map, content) => {
 ```js
 const map = buildMap(['德玛西亚', '德玛东亚', '德牛西亚', '诺克萨斯']);
 
-const result = check(map, '德玛西亚');
+const result = check(map, '弗雷尔卓德德玛西亚暗影岛');
 
 // output:
 // 德玛西亚
