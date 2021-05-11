@@ -102,25 +102,24 @@ const buildMap = (wordList) => {
   // 1. 循环敏感词数组
   for (let i = 0; i < wordList.length; ++i) {
     let map = result;
-    console.log(0, map === result);
     const word = wordList[i];
     // 2. 循环每个敏感词短语
     for (let j = 0; j < word.length; ++j) {
       const ch = word.charAt(j);
-      // 3. 判断是不是存在下一个字符
+      // 3. 判断这个字是不是已经存在与map里面
       if (typeof map[ch] !== 'undefined') {
-        // 不是
+        // 存在该字符
         map = map[ch];
         if (map.isEnd) {
           break;
         }
       } else {
-        // 4. 没存在下一个字符,就得删了当前层的isEnd,然后给下一个层赋isEnd
+        // 4. 没存在该字符,就得删了当前层的isEnd,然后给下一个层赋isEnd
         if (map.isEnd) {
           delete map.isEnd;
         }
         map[ch] = { isEnd: true };
-        map = map[ch];
+        map = map[ch]; // 重点就是这一句了
       }
     }
   }
