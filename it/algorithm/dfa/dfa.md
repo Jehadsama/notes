@@ -109,7 +109,7 @@ const buildMap = (wordList) => {
       // 3. 判断这个字是不是已经存在于map里面
       if (typeof map[ch] !== 'undefined') {
         // 存在该字符
-        map = map[ch];
+        map = map[ch]; // 重点就是这一句了,下同
         if (map.isEnd) {
           break;
         }
@@ -119,7 +119,7 @@ const buildMap = (wordList) => {
           delete map.isEnd;
         }
         map[ch] = { isEnd: true };
-        map = map[ch]; // 重点就是这一句了
+        map = map[ch]; // 重点就是这一句了,同上
       }
     }
   }
