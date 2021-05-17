@@ -22,6 +22,32 @@
 
 ## 实现
 
+### js 代码实现
+
 ```js
-const quickSort = (arr) => {};
+const quickSort = (arr) => {
+  // 数组长度小于等于1就直接返回好了
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  // 计算基准数
+  const pivotIndex = Math.floor(arr.length / 2);
+  const pivot = arr.splice(pivotIndex, 1)[0];
+
+  // 建立左右2个数组，小于<=pivot放进左数组，否则放入右数组
+  const left = [];
+  const right = [];
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    item <= pivot ? left.push(item) : right.push(item);
+  }
+
+  // 递归，然后拼接数组
+  return quickSort(left).concat([pivot], quickSort(right));
+};
 ```
+
+### 测试结果
+
+符合预期
