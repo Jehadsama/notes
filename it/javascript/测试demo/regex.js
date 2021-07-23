@@ -14,7 +14,7 @@ const opContents = [
 const clientName = '橘右京';
 
 // 期望替换ClientName的名字
-const regex = /\[ClientName=(\S\W+)\]/gi;
+const regex = /\[ClientName=(\S\W+|\S\w+)\]/gi; // 大写W是非单字符 小写w是单字符
 
 const result = opContents.map(({ opContent }) => ({
   opContent: opContent.replace(regex, `[ClientName=${clientName}]`),
