@@ -190,9 +190,10 @@ const f1 = new Fruit('Apple');
 f1.info();
 ```
 
-两种方式：
-node 文件：undefined
-在 repl(命令行进入 node)：Banana
+有两种方式：
+
+- node 文件：undefined
+- 在 repl(命令行进入 node)：Banana
 
 #### 在事件中的使用
 
