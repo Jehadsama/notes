@@ -87,3 +87,34 @@ var banana = {
 fruit.call(apple, 'a', 'b'); // 苹果 [ 'a', 'b' ]
 fruit.apply(banana, ['a', 'b']); // 香蕉 [ 'a', 'b' ]
 ```
+
+bind 只是将一个值绑定到函数的 this 上，并将绑定好的函数返回
+
+```js
+function fruit() {
+  console.log(this.name);
+}
+var apple = {
+  name: '苹果',
+};
+fruit = fruit.bind(apple);
+fruit(); // 苹果
+```
+
+除了以上 call、apply、bind 还可以通过上下文 context
+
+```js
+function fruit(name) {
+  console.log(`${this.name}: ${name}`);
+}
+const obj = {
+  name: '这是水果',
+};
+const arr = ['苹果', '香蕉'];
+arr.forEach(fruit, obj);
+// 这是水果: 苹果
+// 这是水果: 香蕉
+```
+
+### new 绑定
+
