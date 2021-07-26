@@ -118,3 +118,13 @@ arr.forEach(fruit, obj);
 
 ### new 绑定
 
+一个构造函数，每一次 new 绑定都会创建一个新对象。
+
+```js
+function Fruit(name) {
+  this.name = name;
+}
+const f1 = new Fruit('apple');
+const f2 = new Fruit('banana');
+console.log(f1.name, f2.name); // apple banana
+```
