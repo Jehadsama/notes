@@ -128,3 +128,92 @@ const f1 = new Fruit('apple');
 const f2 = new Fruit('banana');
 console.log(f1.name, f2.name); // apple banana
 ```
+
+### 优先级
+
+如果 this 的调用位置同时应用了多种绑定规则，它是有优先级的：new 绑定 -> 显示绑定 -> 隐式绑定 -> 默认绑定。
+
+### 箭头函数
+
+箭头函数并非使用`function`关键字进行定义，也不会使用上面所讲解的 this 四种标准规范，箭头函数会继承自外层函数调用的 this 绑定。
+执行`fruit.call(apple)`时，箭头函数 this 已被绑定，无法再次被修改。
+
+```js
+function fruit() {
+  return () => {
+    console.log(this.name);
+  };
+}
+var apple = {
+  name: '苹果',
+};
+var banana = {
+  name: '香蕉',
+};
+var fruitCall = fruit.call(apple);
+fruitCall.call(banana); // 苹果
+```
+
+### this 常见使用问题
+
+#### 通过函数和原型链模拟类
+
+```js
+function Fruit(name) {
+  this.name = name;
+}
+Fruit.prototype.info = function () {
+  console.log(this.name);
+};
+const f1 = new Fruit('Apple');
+f1.info(); // Apple
+const f2 = { name: 'Banana' };
+f2.info = f1.info;
+f2.info(); // Banana
+```
+
+原因是 info 方法里的 this 对应的不是定义时的上下文，而是调用时的上下文，对应的是隐式绑定规则。
+
+#### 原型链上使用箭头函数
+
+如果使用构造函数和原型链模拟类，不能在原型链上定义箭头函数，因为箭头函数的里的 this 会继承外层函数调用的 this 绑定。
+
+```js
+function Fruit(name) {
+  this.name = name;
+}
+Fruit.prototype.info = () => {
+  console.log(this.name);
+};
+var name = 'Banana';
+const f1 = new Fruit('Apple');
+f1.info();
+```
+
+两种方式：
+node 文件：undefined
+在 repl(命令行进入 node)：Banana
+
+#### 在事件中的使用
+
+举一个 Node.js 示例，在事件中使用时，当监听器被调用时，如果声明的是普通函数，this 会被指向监听器所绑定的 EventEmitter 实例，如果使用的箭头函数方式 this 不会指向 EventEmitter 实例。
+
+```js
+const EventEmitter = require('events');
+class MyEmitter extends EventEmitter {
+  constructor() {
+    super();
+    this.name = 'myEmitter';
+  }
+}
+const func1 = () => console.log(this.name);
+const func2 = function () {
+  console.log(this.name);
+};
+const myEmitter = new MyEmitter();
+myEmitter.on('event', func1); // undefined
+myEmitter.on('event', func2); // myEmitter
+myEmitter.emit('event');
+```
+
+#### 其他问题
