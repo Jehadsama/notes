@@ -68,3 +68,22 @@ func(); // js
 ```
 
 将 parent.child 函数本身赋给 func，调用 func() 其实是一个不带任何修饰的函数调用，因此会应用默认绑定。
+
+### 显式绑定
+
+需要引用一个对象时进行强制绑定调用，js 有提供`call` `apply`方法，ES5 中也提供了内置的方法 `Function.prototype.bind`。
+`call` `apply` 这两个函数的第一个参数都是设置 this 对象，区别是 apply 传递参数是按照数组传递，call 是一个一个传递。
+
+```js
+function fruit(...args) {
+  console.log(this.name, args);
+}
+var apple = {
+  name: '苹果',
+};
+var banana = {
+  name: '香蕉',
+};
+fruit.call(apple, 'a', 'b'); // 苹果 [ 'a', 'b' ]
+fruit.apply(banana, ['a', 'b']); // 香蕉 [ 'a', 'b' ]
+```
