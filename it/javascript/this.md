@@ -35,3 +35,36 @@ function test() {
 var a = 1;
 test();
 ```
+
+### 隐式绑定
+
+在函数的调用位置处被某个对象包含，拥有上下文
+
+```js
+function child() {
+  console.log(this.name);
+}
+let parent = {
+  name: 'javascript',
+  child,
+};
+parent.child(); // javascript
+```
+
+函数在调用时会使用 parent 对象上下文来引用函数 child，可以理解为 child 函数被调用时 parent 对象拥有或包含它。
+但隐式调用有一个不好的地方，容易因为因为一些不小心的操作会丢失绑定对象，此时就会应用最开始讲的绑定规则中的默认绑定。
+
+```js
+function child() {
+  console.log(this.name);
+}
+let name = 'js';
+let parent = {
+  name: 'javascript',
+  child,
+};
+let func = parent.child;
+func(); // js
+```
+
+将 parent.child 函数本身赋给 func，调用 func() 其实是一个不带任何修饰的函数调用，因此会应用默认绑定。
