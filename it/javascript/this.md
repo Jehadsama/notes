@@ -9,7 +9,7 @@
 #### 非严格模式调用
 
 在非严格模式下绑定到全局对象。
-在浏览器环境下会将 a 绑定到 window.a，以下代码使用 var 声明的变量 a 会输出 1。
+在浏览器环境下会将 a 绑定到 window.a，以下代码使用`var`声明的变量 a 会输出 1。
 
 ```js
 function test() {
@@ -21,7 +21,7 @@ test();
 
 需要指出的是，如果使用的不是`var`而是`let`或`const`，结果输出 undefined
 这里其实涉及到一个顶层对象的概念。
-顶层对象（浏览器环境指 window、Node.js 环境指 Global）的属性和全局变量属性的赋值是相等价的，使用 var 和 function 声明的是顶层对象的属性，而 let 就属于 ES6 规范了，但是 ES6 规范中 let、const、class 这些声明的全局变量，不再属于顶层对象的属性。
+顶层对象（浏览器环境指 window、Node.js 环境指 Global）的属性和全局变量属性的赋值是相等价的，使用`var`和`function`声明的是顶层对象的属性，而`let`就属于 ES6 规范了，但是 ES6 规范中 `let` `const` `class`这些声明的全局变量，不再属于顶层对象的属性。
 
 #### 严格模式调用
 
@@ -72,7 +72,7 @@ func(); // js
 ### 显式绑定
 
 需要引用一个对象时进行强制绑定调用，js 有提供`call` `apply`方法，ES5 中也提供了内置的方法 `Function.prototype.bind`。
-`call` `apply` 这两个函数的第一个参数都是设置 this 对象，区别是 apply 传递参数是按照数组传递，call 是一个一个传递。
+`call` `apply` 这两个函数的第一个参数都是设置 this 对象，区别是`call`是一个一个传递，而`apply`传递参数是按照数组传递。
 
 ```js
 function fruit(...args) {
