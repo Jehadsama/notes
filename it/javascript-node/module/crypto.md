@@ -75,7 +75,8 @@ decrypt('689d120b4b1362f30d5b46'); // hello world
 
 ### MD5 实现方式
 
-> 参数 algorithm 可选择系统上安装的 OpenSSL 版本所支持的算法。例如：sha1、md5、sha256、sha512 等。在近期发行的版本中，openssl list-message-digest-algorithms 会显示这些可用的摘要算法。
+> 参数 algorithm 可选择系统上安装的 OpenSSL 版本所支持的算法。例如：sha1、md5、sha256、sha512 等。
+> 在近期发行的版本中，openssl list-message-digest-algorithms 会显示这些可用的摘要算法。
 
 `crypto.createHash(algorithm)`创建并返回一个 hash 对象，它是一个指定算法的加密 hash，用于生成 hash 摘要。
 `hash.update(data)`更新 hash 的内容为指定的 data。当使用流数据时可能会多次调用该方法。
