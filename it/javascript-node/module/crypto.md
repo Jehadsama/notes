@@ -16,7 +16,7 @@
 
 #### 数据加密
 
-crypto.createCipheriv(algorithm, pwd, iv) 指定算法、密码、向量创建 cipher 加密对象
+`crypto.createCipheriv(algorithm, pwd, iv)` 指定算法、密码、向量创建 cipher 加密对象
 
 ```js
 const crypto = require('crypto');
@@ -29,15 +29,25 @@ function encrypt(str) {
    * 第三个参数代表加密数据的输出格式，可以是'latin1'， 'base64' 或者 'hex'。没有执行则返回Buffer
    */
   let encrypted = cipher.update(str, 'utf8', 'hex');
-
-  /**
-   * final方法，返回任何加密的内容
-   * 参数可以是'latin1', 'base64' 或者 'hex'，没有指定返回Buffer
-   */
+  // final方法，返回任何加密的内容,参数可以是'latin1', 'base64' 或者 'hex'，没有指定返回Buffer
   encrypted += cipher.final('hex');
-
   return encrypted;
 }
 
 encrypt('hello world'); // 689d120b4b1362f30d5b46
+```
+
+#### 数据解密
+
+`crypto.createDecipheriv(algorithm, pwd, iv)` 指定算法、密码、向量创建 decipher 解密对象
+
+```js
+const crypto = require('crypto');
+const decipher = crypto.createDecipheriv('rc4', '123456', '');
+function decrypt(encrypted) {
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+decrypt('689d120b4b1362f30d5b46'); // hello world
 ```
