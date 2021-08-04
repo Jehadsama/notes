@@ -2,6 +2,10 @@
 
 > `crypto`加密模块是 C／C++ 实现这些算法后，暴露为 javascript 接口的模块, 提供了加密功能，其中包括了用于 OpenSSL 散列、HMAC、加密、解密、签名、以及验证的函数的一整套封装。
 
+## 查看系统支持的加密算法
+
+`openssl list -cipher-algorithms`
+
 ## Cipher
 
 > Cipher 类用于加密数据，属于对称密钥加密，假设通信双方 A、B 通讯方 A 使用 key 对明文进行加密传输，通讯方 B 接收到密文后，使用同样的 key 进行解密得到明文。
@@ -16,8 +20,8 @@ crypto.createCipheriv(algorithm, pwd, iv) 指定算法、密码、向量创建 c
 
 ```js
 const crypto = require('crypto');
-const cipher = crypto.createCipheriv('des-ecb', '12345678', '');
-function cipher(str) {
+const cipher = crypto.createCipheriv('rc4', '123456', '');
+function encrypt(str) {
   /**
    * update方法
    * 第一个参数代表加密的数据
@@ -35,5 +39,5 @@ function cipher(str) {
   return encrypted;
 }
 
-cipher('hello world'); //
+encrypt('hello world'); // 689d120b4b1362f30d5b46
 ```
