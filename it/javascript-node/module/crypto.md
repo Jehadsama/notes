@@ -12,7 +12,7 @@
 
 ### Cipher 加解密实例演示
 
-注意：crypto.createCipher 已废弃，推荐使用 crypto.createCipheriv
+注意：`crypto.createCipher`已废弃，推荐使用`crypto.createCipheriv`
 
 #### 数据加密
 
