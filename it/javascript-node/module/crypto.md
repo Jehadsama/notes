@@ -83,11 +83,7 @@ decrypt('689d120b4b1362f30d5b46'); // hello world
 ```js
 const crypto = require('crypto');
 const md5 = (str) => crypto.createHash('md5').update(str, 'utf8').digest('hex');
-// 默认输出长度为 32 位小写字母
-// 25f9e794323b453885f5181f1b624d0b
-console.log(md5('123456789'));
-
-// 以下转换为 32 位大写字母
-// 25F9E794323B453885F5181F1B624D0B
-console.log(md5('123456789').toUpperCase());
+// 尽管输入长度不同,但是输出长度相同
+md5('1234567890'); // e807f1fcf82d132f9bb018ca6738a19f
+md5('1'); // c4ca4238a0b923820dcc509a6f75849b
 ```
