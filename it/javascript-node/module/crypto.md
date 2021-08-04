@@ -33,7 +33,6 @@ function encrypt(str) {
   encrypted += cipher.final('hex');
   return encrypted;
 }
-
 encrypt('hello world'); // 689d120b4b1362f30d5b46
 ```
 
