@@ -30,4 +30,4 @@ dns 模块中除`dns.lookup()`之外的所有函数，都会连接到实际 DNS 
 
 尽管以异步 JavaScript 的角度来调用 `dns.lookup()`，但在内部 libuv 底层线程池中却是同步的调用 `getaddrinfo(3)`，所以可能会由于一些不确定因素造成 Node 进程阻塞。
 与 `dns.lookup()` 不同的是 `dns.resolve()` 这些方法没有使用 `getaddrinfo(3)`，是通过网络执行的 DNS 查询，始终是保持异步不会对其它进程产生负面影响。
-具体见： http://nodejs.cn/api/dns.html#dns_implementation_considerations
+具体见: <http://nodejs.cn/api/dns.html#dns_implementation_considerations>
