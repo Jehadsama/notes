@@ -649,9 +649,9 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
 举个例子
 
 ```js
-Promise.resolve(1).then(2).then(Promise.resolve(3)).then(console.log);
+Promise.resolve(1).then(2).then(Promise.resolve(3)).then(console.log); // output: 1
 
-// output: 1
+Promise.resolve(1).then().then(console.log); // output: 1
 ```
 
 ### 附录
