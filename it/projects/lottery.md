@@ -89,7 +89,6 @@ ps:几个数据模型，这里仅记录一些主要字段
 |        rule_user_total         | number |     每人中奖次数限制     |                                                 >=0                                                  |
 |        rule_daily_total        | number |     每天中奖次数限制     |                                                 >=0                                                  |
 |     rule_daily_total_power     | array  |     每小时的奖品权重     |                                                                                                      |
-|     rule_daily_total_power     | array  |     每小时的奖品权重     |                                                                                                      |
 | rule_daily_total_power[].hour  | number |      具体到哪个小时      |                                                 0-23                                                 |
 | rule_daily_total_power[].power | number | 具体到哪个小时对应的权重 |                                             默认是 1/24                                              |
 |  rule_daily_total_adjustment   | number |      动态调整的数量      | 在只有总量控制(rule_total>0,rule_daily_total>0)的情况下，这个地方才会被被调整,作用是动态调整奖品库存 |
