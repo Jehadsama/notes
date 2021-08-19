@@ -40,36 +40,36 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 #### 游戏模型
 
-|    字段     |  类型  |   解释   |                 备注                 |
-| :---------: | :----: | :------: | :----------------------------------: |
-|    name     | string |   名称   |                                      |
-|    code     | string |   代码   |                                      |
-| description | string |   描述   |                                      |
-|   status    | string |   状态   | pending 未开始/start 进行中/end 结束 |
-| start_time  |  date  | 开始时间 |                                      |
-|  end_time   |  date  | 结束时间 |                                      |
+|    字段     |  类型  |   解释   |                       备注                        |
+| :---------: | :----: | :------: | :-----------------------------------------------: |
+|    name     | string |   名称   |                                                   |
+|    code     | string |   代码   |                                                   |
+| description | string |   描述   |                                                   |
+|   status    | string |   状态   | pending 未开始/start 进行中/end 结束,默认 pending |
+| start_time  |  date  | 开始时间 |                                                   |
+|  end_time   |  date  | 结束时间 |                                                   |
 
 #### 机会规则模型
 
-|       字段       |  类型   |            解释            |            备注             |
-| :--------------: | :-----: | :------------------------: | :-------------------------: |
-|       name       | string  |            名称            |                             |
-|     game_id      | string  |        游戏模型 id         |                             |
-|      status      | string  |            状态            | valid 有效的/invalid 无效的 |
-|       kind       | string  |          机会来源          |  jifen 积分消耗/share 分享  |
-|   jifen_amount   | number  |        每次消耗积分        |                             |
-|   jifen_times    | number  |          最大次数          |                             |
-| jifen_times_unit | string  |        机会次数单位        |       day 天/month 月       |
-| rule_whole_valid | boolean | 这条规则是否整场活动都有效 |         默认 false          |
+|       字段       |  类型   |            解释            |                   备注                   |
+| :--------------: | :-----: | :------------------------: | :--------------------------------------: |
+|       name       | string  |            名称            |                                          |
+|     game_id      | string  |        游戏模型 id         |                                          |
+|      status      | string  |            状态            | valid 有效的/invalid 无效的,默认 invalid |
+|       kind       | string  |          机会来源          |        jifen 积分消耗/share 分享         |
+|   jifen_amount   | number  |        每次消耗积分        |                                          |
+|   jifen_times    | number  |          最大次数          |                                          |
+| jifen_times_unit | string  |        机会次数单位        |             day 天/month 月              |
+| rule_whole_valid | boolean | 这条规则是否整场活动都有效 |                默认 false                |
 
 #### 用户机会模型
 
-|      字段      |  类型  |                      解释                      |                                         备注                                          |
-| :------------: | :----: | :--------------------------------------------: | :-----------------------------------------------------------------------------------: |
-|    user_id     | string |                    用户 id                     |                                                                                       |
-|    game_id     | string |                  游戏模型 id                   |                                                                                       |
-| game_chance_id | string |                机会规则模型 id                 |                                                                                       |
-|     status     | string |                      状态                      | invalid 未购买/pending 未使用/using 使用中/used 已使用/epxired 已过期/failed 创建失败 |
-|   pending_at   |  date  |                  机会创建时间                  |                                                                                       |
-|    using_at    |  date  | 机会被使用时间(中间态,后端关注,前端不需要关注) |                                                                                       |
-|   expired_at   |  date  |                机会被使用后时间                |                                                                                       |
+|      字段      |  类型  |                      解释                      |                                                备注                                                |
+| :------------: | :----: | :--------------------------------------------: | :------------------------------------------------------------------------------------------------: |
+|    user_id     | string |                    用户 id                     |                                                                                                    |
+|    game_id     | string |                  游戏模型 id                   |                                                                                                    |
+| game_chance_id | string |                机会规则模型 id                 |                                                                                                    |
+|     status     | string |                      状态                      | invalid 未购买/pending 未使用/using 使用中/used 已使用/epxired 已过期/failed 创建失败,默认 invalid |
+|   pending_at   |  date  |                  机会创建时间                  |                                                                                                    |
+|    using_at    |  date  | 机会被使用时间(中间态,后端关注,前端不需要关注) |                                                                                                    |
+|   expired_at   |  date  |                机会被使用后时间                |                                                                                                    |
