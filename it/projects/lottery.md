@@ -166,7 +166,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 
       ```js
       if (prizePicked.kind === 'empty') {
-        console.log('没抽到,再接再厉');
+        // 没抽到,再接再厉
       }
       ```
 
