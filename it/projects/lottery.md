@@ -164,3 +164,6 @@ ps:几个数据模型，这里仅记录一些主要字段
       ```
 
    1. 既然确定奖品有效,那就得判断库存,这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
+
+      > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.
+      > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
