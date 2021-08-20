@@ -277,7 +277,8 @@ ps:几个数据模型，这里仅记录一些主要字段
        // 中奖的业务逻辑,诸如机会消耗、生成用户中奖记录等
    }
 
-   // 没中奖就得去回滚上面limiter的消耗,同上面,只是这里调用的是reward方法 limiter.reward()
+   // 没中奖就进入rollback阶段，得去回滚上面limiter的消耗,同上面,只是这里调用的是reward方法 limiter.reward()
+   // 当然了,rollback失败的情况最好也得考虑进去
    ```
 
 1. 最后,是通过一个定时任务每小时调整 gamePrize 的 rule_daily_total_adjustment,以达到需求中的 `上一时间区间的奖品未发完则顺延下一时间区间` 以及 `上一天的奖品未发完则顺延下一天`
