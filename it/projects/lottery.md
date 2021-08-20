@@ -181,7 +181,7 @@ ps:几个数据模型，这里仅记录一些主要字段
    > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
    > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
 
-   `Note, limiter doesn't store any data for key, until you call consume, set, penalty, reward or any other method supposed to change amount of points.`
+   ==Note, limiter doesn't store any data for key, until you call consume, set, penalty, reward or any other method supposed to change amount of points.==
 
    使用方式
 
