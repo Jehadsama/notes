@@ -47,14 +47,14 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 #### 游戏模型
 
-|    字段     |  类型  |   解释   |                            备注                            |
-| :---------: | :----: | :------: | :--------------------------------------------------------: |
-|    name     | string |   名称   |                                                            |
-|    code     | string |   代码   |                                                            |
-| description | string |   描述   |                                                            |
-|   status    | string |   状态   | pending 未开始<br>start 进行 <br>end 结束 <br>默认 pending |
-| start_time  |  date  | 开始时间 |                                                            |
-|  end_time   |  date  | 结束时间 |                                                            |
+|    字段     |  类型  |   解释   | 备注 |
+| :---------: | :----: | :------: | :--: |
+|    name     | string |   名称   |      |
+|    code     | string |   代码   |      |
+| description | string |   描述   |      |
+|   status    | string |   状态   |      |
+| start_time  |  date  | 开始时间 |      |
+|  end_time   |  date  | 结束时间 |      |
 
 #### 机会规则模型
 
