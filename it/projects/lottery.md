@@ -34,6 +34,13 @@
 
 ## 实现
 
+### 技术栈
+
+- nodejs
+- mongo
+- mongoose
+- [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
+
 ### 数据模型
 
 ps:几个数据模型，这里仅记录一些主要字段
@@ -169,7 +176,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 
    - 业务需求提到的奖品中奖概率的时间线分布
 
-   这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
+   因此这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
 
    > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
    > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
