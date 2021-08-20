@@ -40,14 +40,14 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 #### 游戏模型
 
-|    字段     |  类型  |   解释   |                       备注                        |
-| :---------: | :----: | :------: | :-----------------------------------------------: |
-|    name     | string |   名称   |                                                   |
-|    code     | string |   代码   |                                                   |
-| description | string |   描述   |                                                   |
-|   status    | string |   状态   | pending 未开始/start 进行中/end 结束,默认 pending |
-| start_time  |  date  | 开始时间 |                                                   |
-|  end_time   |  date  | 结束时间 |                                                   |
+|    字段     |  类型  |   解释   |                            备注                            |
+| :---------: | :----: | :------: | :--------------------------------------------------------: |
+|    name     | string |   名称   |                                                            |
+|    code     | string |   代码   |                                                            |
+| description | string |   描述   |                                                            |
+|   status    | string |   状态   | pending 未开始<br>start 进行 <br>end 结束 <br>默认 pending |
+| start_time  |  date  | 开始时间 |                                                            |
+|  end_time   |  date  | 结束时间 |                                                            |
 
 #### 机会规则模型
 
@@ -80,6 +80,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 |              name              | string |         奖品名称         |                                                                                                            |
 |            game_id             | string |       游戏模型 id        |                                                                                                            |
 |             status             | string |           状态           |                              valid 有效的<br> invalid 无效的<br> 默认 invalid                              |
+|              kind              | string |         奖品类型         |                                  jifen 积分<br>hongbao 红包<br>empty 空白                                  |
 |           start_time           |  date  |         开始时间         |                                                                                                            |
 |            end_time            |  date  |         结束时间         |                                                                                                            |
 |             power              | number |           权重           |               本奖品的中奖权重。 <br> 如果全部产品权重加起来是 1，那这个就是百分比下的概率了               |
@@ -101,9 +102,63 @@ ps:几个数据模型，这里仅记录一些主要字段
 | user_chance_id | string | 用户机会模型 id |                                                               |
 | game_prize_id  | string |   奖品模型 id   |                                                               |
 |     status     | string |      状态       | created 刚被创建/delivered 已发放/invalid 不合法,默认 created |
+|      kind      | string |    奖品类型     |           jifen 积分<br>hongbao 红包<br>empty 空白            |
 |   start_time   |  date  |    开始时间     |                                                               |
 |    end_time    |  date  |    结束时间     |                                                               |
 |   prized_at    |  date  |    中奖时间     |                                                               |
 |     secret     | string |  奖品密钥之类   |                                                               |
 
-### 思路
+### 主要实现功能
+
+#### 用户抽奖机会获取
+
+这一步很简单，也就是判断活动是否有效，用户满不满足获取抽奖机会条件之类的判断
+
+#### 抽奖
+
+1. 检查游戏活动是否有效
+
+1. 检查抽奖机会是否有效
+
+1. 确定中奖奖品
+
+   1. 升序排列==全部==奖品概率权重值,即 power,并合集 power 得出 totalPower,再过滤得出全部(有效状态及有库存)的奖品 validPrizes
+
+   ```js
+   const prizes = await gameprizes
+     .find({ power: { $gt: 0, game_id } })
+     .sort('power');
+
+   const totalPower = _.sumBy(prizes, 'power');
+
+   const validPrizes = prizes.filter(
+     (prize) => prize.status === 'valid' && prize.rule_total > 0
+   );
+   ```
+
+   1. 计算随机数,并定义中间变量,遍历奖品比较 power,以确定奖品
+
+   ```js
+   // 命中的权重值
+   const randomPower = _.random(totalPower, true);
+   // 水位线从0开始上涨
+   let waterline = 0;
+   // 如果没有没有被命中的奖品，那也要当作没有抽中奖品
+   const prizePicked = _.find(prizes, (prize) => {
+     // 更新最新的水位线
+     waterline = prize.power + waterline;
+     // 如果命中的权重值比水位线还搞，那就不是要命中当前商品
+     if (randomPower > waterline) {
+       return false;
+     }
+     return prize;
+   });
+   ```
+
+   1. 判断上一步得出的奖品的 kind 是否 empty,万一命中,那就是没中了
+
+   ```js
+   if (prizePicked.kind === 'empty') {
+     console.log('没抽到,再接再厉');
+   }
+   ```
