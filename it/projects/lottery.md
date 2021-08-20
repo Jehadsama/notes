@@ -129,7 +129,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 1. 确定中奖奖品
 
-   1. 升序排列**_全部_**奖品概率权重值,即 power,并合集 power 得出 totalPower,再过滤得出全部(有效状态及有库存)的奖品 validPrizes
+   1. 升序排列**全部**奖品概率权重值,即 power,并合集 power 得出 totalPower,再过滤得出全部(有效状态及有库存)的奖品 validPrizes
 
       ```js
       const prizes = await gameprizes
@@ -181,7 +181,7 @@ ps:几个数据模型，这里仅记录一些主要字段
    > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
    > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
 
-   **_Note, limiter doesn't store any data for key, until you call consume, set, penalty, reward or any other method supposed to change amount of points._**
+   **Note, limiter doesn't store any data for key, until you call consume, set, penalty, reward or any other method supposed to change amount of points.**
 
    使用方式
 
