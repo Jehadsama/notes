@@ -83,7 +83,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 |              kind              | string |         奖品类型         |                                  jifen 积分<br>hongbao 红包<br>empty 空白                                  |
 |           start_time           |  date  |         开始时间         |                                                                                                            |
 |            end_time            |  date  |         结束时间         |                                                                                                            |
-|             power              | number |           权重           |               本奖品的中奖权重。 <br> 如果全部产品权重加起来是 1，那这个就是百分比下的概率了               |
+|             power              | number |   本奖品的中奖概率权重   |                           如果全部产品权重加起来是 1，那这个就是百分比下的概率了                           |
 |           rule_total           | number |         总数控制         |                                                0 代表不限制                                                |
 |        rule_user_total         | number |     每人中奖次数限制     |                                                    >=0                                                     |
 |        rule_daily_total        | number |     每天中奖次数限制     |                                                    >=0                                                     |
