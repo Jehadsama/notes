@@ -180,3 +180,102 @@ ps:几个数据模型，这里仅记录一些主要字段
 
    > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
    > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
+
+   `Note, limiter doesn't store any data for key, until you call consume, set, penalty, reward or any other method supposed to change amount of points.`
+
+   使用方式
+
+   ```js
+   // npm install -S rate-limiter-flexible
+   // 因为这里使用 mongo,所以选择 RateLimiterMongo
+   const { RateLimiterMongo } = require('rate-limiter-flexible');
+   ```
+
+   根据奖品几种级别控制 lmiter
+
+   ```js
+   const getRateLimiterPayloads = ({ gamePrize, gameUserId }) => {
+     const payloads = [];
+     const topic = [gamePrize.game_id, gamePrize._id].join(':');
+
+     // 总量控制
+     if (gamePrize.rule_total) {
+       payloads.push({
+         topic,
+         // 因为总量控制是永久有效的，所以直接 duration 0
+         initOpt: { duration: 0, points: gamePrize.rule_total },
+         // 表示控制总量
+         target: 'total',
+       });
+     }
+
+     // 用户级别数量限制
+     if (gamePrize.rule_user_kind_total) {
+       payloads.push({
+         topic: [gamePrize.game_id, gamePrize.kind].join(':'),
+         // 控制某个是永久有效的，所以直接 duration 0
+         initOpt: { duration: 0, points: gamePrize.rule_user_kind_total },
+         // 表示控制某一个用户
+         target: gameUserId,
+       });
+     }
+
+     if (gamePrize.rule_daily_total) {
+       // 一天 24 小时，默认每小时就是 1/24
+       const hour = u.date.now().hour();
+       const dailyTotal =
+         gamePrize.rule_daily_total + gamePrize.rule_daily_total_adjustment;
+       const hourPoints = _.round(
+         _.get(
+           _.find(gamePrize.rule_daily_total_power, {
+             hour,
+           }),
+           'power',
+           1 / 24
+         ) * dailyTotal
+       );
+       payloads.push({
+         topic: `${topic}:hour`,
+         initOpt: { duration: 0, points: Math.max(hourPoints, 1) },
+         target: [u.date.formatDate(), hour].join(':'),
+       });
+       payloads.push({
+         topic: `${topic}:day`,
+         initOpt: { duration: 0, points: Math.max(dailyTotal, 1) },
+         target: u.date.formatDate(),
+       });
+     }
+
+     return payloads;
+   };
+
+   // ...........
+
+   const rateLimiterPayloads = getRateLimiterPayloads({
+     gamePrize: prize,
+     gameUserId,
+   });
+   // 那就是什么限制都没有了,肯定直接就成功啦
+   if (rateLimiterPayloads.length === 0) {
+     return true;
+   }
+
+   const consumeResult = await Promise.allSettled(
+     rateLimiterPayloads.map(async ({ topic, initOpt, target }) => {
+       const limiter = new RateLimiterMongo({
+         ...opts, // 一些其他的配置
+         storeClient: mongo,
+         keyPrefix: topic,
+         ...initOpt,
+       });
+       return limiter.consume(target);
+     })
+   );
+
+    // 全部成功才允许消耗库存,也就真的中奖了
+   if(consumeResult 全部成功){
+       // 真的中奖
+   }
+
+   // 没中奖就得去回滚上面limiter的消耗
+   ```
