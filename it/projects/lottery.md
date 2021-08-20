@@ -282,3 +282,30 @@ ps:几个数据模型，这里仅记录一些主要字段
    ```
 
 1. 最后,是通过一个定时任务每小时调整 gamePrize 的 rule_daily_total_adjustment,以实现需求中的 `上一时间区间的奖品未发完则顺延下一时间区间` 以及 `上一天的奖品未发完则顺延下一天`
+
+   ```js
+   // 求出这么多天本应消耗的库存
+   const exptectCount = days * gamePrize.rule_daily_total;
+
+   // 求出当前已用的库存
+   const userPrizeCount = await models.UserPrize.count({
+     game_prize_id: gamePrize._id,
+     created_at: {
+       $gte: u.date.now(gamePrize.start_time).startOf('day'),
+       $lt: now.clone().startOf('day'),
+     },
+     status: { $in: ['created', 'delivered'] },
+   });
+
+   // 先写死最多 buffer 2 天的量
+   const diffCount = Math.min(
+     exptectCount - userPrizeCount,
+     gamePrize.rule_daily_total * 2
+   );
+
+   // 更新rule_daily_total_adjustment
+   const result = await models.GamePrize.updateOne(
+     { _id: gamePrize._id },
+     { $set: { rule_daily_total_adjustment: diffCount } }
+   );
+   ```
