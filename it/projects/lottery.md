@@ -162,3 +162,5 @@ ps:几个数据模型，这里仅记录一些主要字段
      console.log('没抽到,再接再厉');
    }
    ```
+
+   1. 既然确定奖品有效,那就得判断库存,这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
