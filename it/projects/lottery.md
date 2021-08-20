@@ -124,43 +124,43 @@ ps:几个数据模型，这里仅记录一些主要字段
 
    1. 升序排列==全部==奖品概率权重值,即 power,并合集 power 得出 totalPower,再过滤得出全部(有效状态及有库存)的奖品 validPrizes
 
-   ```js
-   const prizes = await gameprizes
-     .find({ power: { $gt: 0, game_id } })
-     .sort('power');
+      ```js
+      const prizes = await gameprizes
+        .find({ power: { $gt: 0, game_id } })
+        .sort('power');
 
-   const totalPower = _.sumBy(prizes, 'power');
+      const totalPower = _.sumBy(prizes, 'power');
 
-   const validPrizes = prizes.filter(
-     (prize) => prize.status === 'valid' && prize.rule_total > 0
-   );
-   ```
+      const validPrizes = prizes.filter(
+        (prize) => prize.status === 'valid' && prize.rule_total > 0
+      );
+      ```
 
    1. 计算随机数,并定义中间变量,遍历奖品比较 power,以确定奖品
 
-   ```js
-   // 命中的权重值
-   const randomPower = _.random(totalPower, true);
-   // 水位线从0开始上涨
-   let waterline = 0;
-   // 如果没有没有被命中的奖品，那也要当作没有抽中奖品
-   const prizePicked = _.find(prizes, (prize) => {
-     // 更新最新的水位线
-     waterline = prize.power + waterline;
-     // 如果命中的权重值比水位线还搞，那就不是要命中当前商品
-     if (randomPower > waterline) {
-       return false;
-     }
-     return prize;
-   });
-   ```
+      ```js
+      // 命中的权重值
+      const randomPower = _.random(totalPower, true);
+      // 水位线从0开始上涨
+      let waterline = 0;
+      // 如果没有没有被命中的奖品，那也要当作没有抽中奖品
+      const prizePicked = _.find(prizes, (prize) => {
+        // 更新最新的水位线
+        waterline = prize.power + waterline;
+        // 如果命中的权重值比水位线还搞，那就不是要命中当前商品
+        if (randomPower > waterline) {
+          return false;
+        }
+        return prize;
+      });
+      ```
 
    1. 判断上一步得出的奖品的 kind 是否 empty,万一命中,那就是没中了
 
-   ```js
-   if (prizePicked.kind === 'empty') {
-     console.log('没抽到,再接再厉');
-   }
-   ```
+      ```js
+      if (prizePicked.kind === 'empty') {
+        console.log('没抽到,再接再厉');
+      }
+      ```
 
    1. 既然确定奖品有效,那就得判断库存,这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
