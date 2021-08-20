@@ -163,7 +163,13 @@ ps:几个数据模型，这里仅记录一些主要字段
       }
       ```
 
-   1. 既然确定奖品有效,那就得判断库存,这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
+1. 奖品确认之后,仍有 2 个重要问题待处理:
 
-      > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
-      > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
+   - 抽奖活动通常是高并发的,例如多个人同时抽中同一个奖品,设涉及的奖品库存问题
+
+   - 业务需求提到的奖品中奖概率的时间线分布
+
+   这里使用了 [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible)
+
+   > rate-limiter-flexible counts and limits number of actions by key and protects from DDoS and brute force attacks at any scale.<br>
+   > It works with Redis, process Memory, Cluster or PM2, Memcached, MongoDB, MySQL, PostgreSQL and allows to control requests rate in single process or distributed environment.
