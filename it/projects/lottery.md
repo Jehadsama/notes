@@ -82,22 +82,22 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 #### 奖品模型
 
-|              字段              |  类型  |           解释           |                                                    备注                                                    |
-| :----------------------------: | :----: | :----------------------: | :--------------------------------------------------------------------------------------------------------: |
-|              name              | string |         奖品名称         |                                                                                                            |
-|            game_id             | string |       游戏模型 id        |                                                                                                            |
-|             status             | string |           状态           |                              valid 有效的<br> invalid 无效的<br> 默认 invalid                              |
-|              kind              | string |         奖品类型         |                                         hongbao 红包<br>empty 空白                                         |
-|           start_time           |  date  |         开始时间         |                                                                                                            |
-|            end_time            |  date  |         结束时间         |                                                                                                            |
-|             power              | number |   本奖品的中奖概率权重   |                           如果全部产品权重加起来是 1，那这个就是百分比下的概率了                           |
-|           rule_total           | number |         总数控制         |                                                0 代表不限制                                                |
-|        rule_user_total         | number |     每人中奖次数限制     |                                                    >=0                                                     |
-|        rule_daily_total        | number |     每天中奖次数限制     |                                                    >=0                                                     |
-|     rule_daily_total_power     | array  |     每小时的奖品权重     |                                                                                                            |
-| rule_daily_total_power[].hour  | number |      具体到哪个小时      |                                                    0-23                                                    |
-| rule_daily_total_power[].power | number | 具体到哪个小时对应的权重 |                                                默认是 1/24                                                 |
-|  rule_daily_total_adjustment   | number |      动态调整的数量      | 在只有总量控制(rule_total>0,rule_daily_total>0)的情况下， <br> 这个地方才会被被调整,作用是动态调整奖品库存 |
+|              字段              |  类型  |           解释           |                                              备注                                               |
+| :----------------------------: | :----: | :----------------------: | :---------------------------------------------------------------------------------------------: |
+|              name              | string |         奖品名称         |                                                                                                 |
+|            game_id             | string |       游戏模型 id        |                                                                                                 |
+|             status             | string |           状态           |                        valid 有效的<br> invalid 无效的<br> 默认 invalid                         |
+|              kind              | string |         奖品类型         |                                   hongbao 红包<br>empty 空白                                    |
+|           start_time           |  date  |         开始时间         |                                                                                                 |
+|            end_time            |  date  |         结束时间         |                                                                                                 |
+|             power              | number |   本奖品的中奖概率权重   |                     如果全部产品权重加起来是 1，那这个就是百分比下的概率了                      |
+|           rule_total           | number |         总数控制         |                                          0 代表不限制                                           |
+|        rule_user_total         | number |     每人中奖次数限制     |                                               >=0                                               |
+|        rule_daily_total        | number |     每天中奖次数限制     |                                               >=0                                               |
+|     rule_daily_total_power     | array  |     每小时的奖品权重     |                                                                                                 |
+| rule_daily_total_power[].hour  | number |      具体到哪个小时      |                                              0-23                                               |
+| rule_daily_total_power[].power | number | 具体到哪个小时对应的权重 |                                           默认是 1/24                                           |
+|  rule_daily_total_adjustment   | number |      动态调整的数量      | 当总量控制(rule_total>0&&rule_daily_total>0)的情况下， <br> 才会被被调整,作用是动态调整奖品库存 |
 
 #### 中奖记录模型
 
