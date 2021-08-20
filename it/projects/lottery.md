@@ -66,7 +66,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 |       kind       | string  |          机会来源          | jifen 积分消耗<br> share 分享 |
 |   jifen_amount   | number  |        每次消耗积分        |                               |
 |   jifen_times    | number  |          最大次数          |                               |
-| jifen_times_unit | string  |        机会次数单位        |      day 天<br> month 月      |
+| jifen_times_unit | string  |        机会次数单位        |            day 天             |
 | rule_whole_valid | boolean | 这条规则是否整场活动都有效 |          默认 false           |
 
 #### 用户机会模型
@@ -87,7 +87,7 @@ ps:几个数据模型，这里仅记录一些主要字段
 |              name              | string |         奖品名称         |                                                                                                            |
 |            game_id             | string |       游戏模型 id        |                                                                                                            |
 |             status             | string |           状态           |                              valid 有效的<br> invalid 无效的<br> 默认 invalid                              |
-|              kind              | string |         奖品类型         |                                  jifen 积分<br>hongbao 红包<br>empty 空白                                  |
+|              kind              | string |         奖品类型         |                                         hongbao 红包<br>empty 空白                                         |
 |           start_time           |  date  |         开始时间         |                                                                                                            |
 |            end_time            |  date  |         结束时间         |                                                                                                            |
 |             power              | number |   本奖品的中奖概率权重   |                           如果全部产品权重加起来是 1，那这个就是百分比下的概率了                           |
@@ -101,19 +101,19 @@ ps:几个数据模型，这里仅记录一些主要字段
 
 #### 中奖记录模型
 
-|      字段      |  类型  |      解释       |                   备注                   |
-| :------------: | :----: | :-------------: | :--------------------------------------: |
-|    user_id     | string |     用户 id     |                                          |
-|      name      | string |    奖品名称     |                                          |
-|    game_id     | string |   游戏模型 id   |                                          |
-| user_chance_id | string | 用户机会模型 id |                                          |
-| game_prize_id  | string |   奖品模型 id   |                                          |
-|     status     | string |      状态       |                                          |
-|      kind      | string |    奖品类型     | jifen 积分<br>hongbao 红包<br>empty 空白 |
-|   start_time   |  date  |    开始时间     |                                          |
-|    end_time    |  date  |    结束时间     |                                          |
-|   prized_at    |  date  |    中奖时间     |                                          |
-|     secret     | string |  奖品密钥之类   |                                          |
+|      字段      |  类型  |      解释       |            备注            |
+| :------------: | :----: | :-------------: | :------------------------: |
+|    user_id     | string |     用户 id     |                            |
+|      name      | string |    奖品名称     |                            |
+|    game_id     | string |   游戏模型 id   |                            |
+| user_chance_id | string | 用户机会模型 id |                            |
+| game_prize_id  | string |   奖品模型 id   |                            |
+|     status     | string |      状态       |                            |
+|      kind      | string |    奖品类型     | hongbao 红包<br>empty 空白 |
+|   start_time   |  date  |    开始时间     |                            |
+|    end_time    |  date  |    结束时间     |                            |
+|   prized_at    |  date  |    中奖时间     |                            |
+|     secret     | string |  奖品密钥之类   |                            |
 
 ### 主要实现功能
 
