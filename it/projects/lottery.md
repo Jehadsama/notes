@@ -191,7 +191,7 @@ ps:几个数据模型，这里仅记录一些主要字段
    const { RateLimiterMongo } = require('rate-limiter-flexible');
    ```
 
-   根据奖品几种级别控制 lmiter
+   根据奖品几种级别控制 lmiter,**limiter 方法返回结果均是 promise**
 
    ```js
    const getRateLimiterPayloads = ({ gamePrize, gameUserId }) => {
@@ -298,6 +298,8 @@ ps:几个数据模型，这里仅记录一些主要字段
         "points" : 1
     },
    ```
+
+   points 变成 0 就不能继续消耗
 
 1. 最后,是通过一个定时任务每小时调整 gamePrize 的 rule_daily_total_adjustment,以实现需求中的 `上一时间区间的奖品未发完则顺延下一时间区间` 以及 `上一天的奖品未发完则顺延下一天`
 
