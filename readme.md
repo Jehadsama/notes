@@ -22,12 +22,12 @@
       - [dns](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/modules/dns.md)
       - [koa-compose](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/modules/koa-compose.md)
     - [promise 原理与实现](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/promise/promise原理与实现.md)
-    - [eventloop](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/eventloop.md)
+    - [eventloop](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/eventloop.md)(未完待续)
     - [this](https://github.com/Jehadsama/notes/blob/master/it/javascript-node/this.md)
   - projects
     - [lottery](https://github.com/Jehadsama/notes/blob/master/it/projects/lottery.md)
   - protocol
-    - [http](https://github.com/Jehadsama/notes/blob/master/it/protocol/http.md)
+    - [http](https://github.com/Jehadsama/notes/blob/master/it/protocol/http.md)(未完待续)
   - [接口幂等性](https://github.com/Jehadsama/notes/blob/master/it/接口幂等性.md)
   - [json 序列化与反序列化](https://github.com/Jehadsama/notes/blob/master/it/json序列化与反序列化.md)
-  - [redis 入门](https://github.com/Jehadsama/notes/blob/master/it/redis入门.md)
+  - [redis 入门](https://github.com/Jehadsama/notes/blob/master/it/redis入门.md)(未完待续)
