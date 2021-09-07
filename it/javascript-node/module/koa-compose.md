@@ -77,7 +77,9 @@ node 启动 app.js 后, 发起请求`curl http://127.0.0.1:3000`,命令窗口将
 
 而这里的 compose 才是本文主要分享的
 
-## compose 源码及注释
+## compose
+
+### 源码及注释
 
 koa-compose 源码地址：[https://github.com/koajs/compose/blob/master/index.js](https://github.com/koajs/compose/blob/master/index.js)
 
