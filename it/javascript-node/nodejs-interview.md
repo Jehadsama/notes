@@ -14,6 +14,12 @@
 
 1. 写出 Math Array String 自带的方法，各五个
 
+Math: pow round ceil floor square
+
+Array: join slice splice filter map
+
+String: split replace repeat substring startsWith
+
 1. 给 String,添加一个 getLength()方法，例如 var str ='sss'; str.getLength();，结果为 3。
 
 1. 用 javascript 实现数组去重
