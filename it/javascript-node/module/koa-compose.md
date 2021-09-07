@@ -157,7 +157,11 @@ function compose(middleware) {
 }
 ```
 
+### 验证测试
+
 ```js
+const compose = require('koa-compose');
+
 function one(ctx, next) {
   console.log('第一个');
   next(); // 控制权交到下一个中间件（实际上是可以执行下一个函数）
