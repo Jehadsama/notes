@@ -663,3 +663,9 @@ Promise.resolve(1).then().then(console.log); // output: 1
    - [myPromise 的实现 class 版本](https://github.com/Jehadsama/notes/blob/master/it/javascript/promise/myPromiseClass.js)
 
    - [myPromise 的实现 function 版本](https://github.com/Jehadsama/notes/blob/master/it/javascript/promise/myPromiseFunction.js)
+
+### 参考
+
+---
+
+1. [看了就会，手写 Promise 原理，最通俗易懂的版本！！！](https://juejin.cn/post/6994594642280857630)
