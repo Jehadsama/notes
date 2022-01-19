@@ -134,8 +134,8 @@ function compose(middleware) {
       // 获取中间件
       let fn = middleware[i];
 
-      // 当i===数组长度,说明中间件都执行结束,执行结束后把fn设置为undefined
-      // TODO:问题：本来middleware[i]如果i为length的话取到的值已经是undefined了,为什么要重新给fn设置为undefined呢？
+      // 当i===数组长度,说明中间件都执行结束,执行结束后把fn设置为next
+      // 问题：本来middleware[i]如果i为length的话取到的值已经是undefined了,为什么要重新给fn设置为undefined呢？因为外面的fnMiddlewares是可以传入context和next的,也就是例子的注释部分
       if (i === middleware.length) fn = next;
 
       // 如果中间件遍历到最后了,返回一个成功状态的promise
@@ -178,8 +178,11 @@ function three(ctx, next) {
   next();
 }
 
-const middlewares = compose([one, two, three]);
-middlewares().then(function () {
+const fnMiddlewares = compose([one, two, three]);
+// fnMiddlewares({},console.log).then(function () {
+//   console.log('队列执行完毕');
+// });
+fnMiddlewares().then(function () {
   console.log('队列执行完毕');
 });
 ```
