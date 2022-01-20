@@ -1,0 +1,66 @@
+# circular-dependency
+
+## 背景
+
+依赖关系越复杂的项目，越容易出现循环依赖。
+
+循环依赖与模块加载机制有关。
+
+当前 javascript 最常见的二种模块机制是 CommonJS 和 ES6，他们的处理机制不一样。
+
+## CommonJS 模块
+
+CommonJS 模块的重要特性是加载时执行
+
+```js
+// a.js
+console.log('a starting');
+exports.done = false;
+const b = require('./b.js');
+console.log(`in a, b.done = ${b.done}`);
+exports.done = true;
+console.log('a done');
+```
+
+```js
+// b.js
+console.log('b starting');
+exports.done = false;
+const a = require('./a.js');
+console.log(`in b, a.done = ${a.done}`);
+exports.done = true;
+console.log('b done');
+```
+
+```js
+// main.js
+console.log('main starting');
+const a = require('./a.js');
+const b = require('./b.js');
+console.log(`in main, a.done = ${a.done}, b.done = ${b.done}`);
+```
+
+执行 main.js
+
+```bash
+> node main.js
+
+main starting
+a starting
+b starting
+in b, a.done = false
+b done
+in a, b.done = true
+a done
+in main, a.done = true, b.done = true
+```
+
+步骤解释：
+
+1. 执行 main.js，加载 a.js 时，执行权交给 a.js
+
+2. a.js 执行到 require('./b.js')，此时 a.js 代码停在此处，将执行权交给 b.js，等待 b.js 执行完毕再继续执行
+
+3. b.js 执行到 require('./a.js')，这时发生了循环加载，由于上面 a.js 只执行一部分就停止，所以只能从 a.js 的 exports 中取回已经执行的，这时的 a.done=false，b.js 继续执行，执行完毕后，执行权回到 a.js
+
+4. a.js 执行完毕，执行权回到 main.js，main.js 继续执行，然而这时本应进入执行 require('./b.js')，然而并没有任何 b.js 文件的信息输出，所以这时 b.js 没有再执行而是从缓存读取结果
